@@ -1,4 +1,4 @@
-package com.example.votewebback;
+package com.example.votewebback.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
     @GetMapping("/hello")
     public String helloWorld(){
-        return "hello";
+        return "hi";
     }
 }
