@@ -28,7 +28,7 @@ public class VoteEntity {
     @Column(name = "grade")
     private int grade;
     @Column(name = "vote_type")
-    private String votetype;
+    private VoteType votetype;
     @Column(name = "start_date")
     private LocalDate startdate;
     @Column(name = "end_date")
