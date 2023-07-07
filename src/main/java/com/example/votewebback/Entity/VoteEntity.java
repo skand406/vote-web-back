@@ -9,15 +9,12 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name="Vote")
-public class Vote {
+public class VoteEntity {
     @ManyToOne
     @JoinColumn(name="manager_id")
-    private Manager managerid;
+    private ManagerEntity managerid;
 
-    @Column(name = "manager_name")
-    private String managername;
-    @Column(name = "manager_tel")
-    private String managertel;
+
     @Column(name = "vote_name")
     private String votename;
     @Column(name = "vote_active")
@@ -26,11 +23,12 @@ public class Vote {
     @Id
     @Column(name = "vote_id")
     private String voteid;
-    @Column(name = "student_major")
-    private String studentmajor;
-    @Column(name = "student_grade")
-    private int studentgrade;
-
+    @Column(name = "major")
+    private String major;
+    @Column(name = "grade")
+    private int grade;
+    @Column(name = "vote_type")
+    private String votetype;
     @Column(name = "start_date")
     private LocalDate startdate;
     @Column(name = "end_date")

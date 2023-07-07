@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="Student")
-public class Student {
+public class StudentEntity {
     @Id
     @Column(name = "student_id")
     private String studentid;
@@ -24,5 +24,6 @@ public class Student {
     private int studentgrade;
     @Column(name = "student_email")
     private String studentemail;
-
+    @Column(name = "student_tel")
+    private String studenttel;
 }

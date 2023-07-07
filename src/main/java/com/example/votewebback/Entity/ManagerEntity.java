@@ -11,14 +11,16 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="Manager")
-public class Manager {
+public class ManagerEntity {
     @Id
-    @Column(name="manager_id")
+    @Column(name="manager_id",unique = true)
     private String managerid;
+    @Column(name="manager_password")
+    private String managerpassword;
     @Column(name="manager_name")
     private String managername;
     @Column(name="manager_tel")
     private String managertel;
-    @Column(name="manager_email")
+    @Column(name="manager_email",unique = true)
     private String manageremail;
 }

@@ -8,26 +8,25 @@ import lombok.Setter;
 @Entity
 @IdClass(VoteStudentIdKey.class)
 @Table(name="Candidate")
-public class Candidate {
+public class CandidateEntity {
     @Id
     @ManyToOne
     @MapsId("student_id")
     @JoinColumn(name="student_id")
-    private Student studentid;
+    private StudentEntity studentid;
     @Id
     @ManyToOne
     @MapsId("vote_id")
     @JoinColumn(name = "vote_id")
-    private Vote voteid;
+    private VoteEntity voteid;
 
 
     @Column(name = "candidate_spec")
     private String candidatespec;
     @Column(name = "candidate_promise")
     private String candidatepromise;
-
-    @Column(name = "vote_counter")
-    private int votecounter;
+    @Column(name = "candidate_counter")
+    private int candidatecounter;
     @Column(name = "img_path")
     private String imgpath;
 }
