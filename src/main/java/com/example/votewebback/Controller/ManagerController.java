@@ -22,19 +22,19 @@ public class ManagerController {
         return "ok";
     }
     @GetMapping("/{manager_id}")
-    public String ManagerInfo(){
+    public String ManagerInfo(@PathVariable("manager_id") String manager_id){
         return "ok";
     }
     @PutMapping("/modify/{manager_id}")
-    public String ManagerModify(){
+    public String ManagerModify(@PathVariable("manager_id") String manager_id){
         return "ok";
     }
     @PutMapping("/{manager_id}/pw")
-    public String ManagerResetPW(){
+    public String ManagerResetPW(@PathVariable("manager_id") String manager_id){
         return "ok";
     }
-    @DeleteMapping("{manager_id}")
-    public String ManagerRemove(){
+    @DeleteMapping("/{manager_id}")
+    public String ManagerRemove(@PathVariable("manager_id") String manager_id){
         return "ok";
     }
 
