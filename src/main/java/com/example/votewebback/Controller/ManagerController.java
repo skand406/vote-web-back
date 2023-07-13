@@ -1,18 +1,21 @@
 package com.example.votewebback.Controller;
 
+import com.example.votewebback.DTO.RequestDTO;
+import com.example.votewebback.Service.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/managers")
+@RequiredArgsConstructor
 public class ManagerController {
-    @PostMapping("/login")
-    public String login(){
-        return "ok";
-    }
-    @PostMapping("/signup")
-    public String signup(){
-        return "ok";
-    }
+    private final ManagerService managerService;
+
+
+
+
     @PostMapping("/id")
     public String ManagerID(){
         return "ok";
