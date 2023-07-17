@@ -1,33 +1,26 @@
 package com.example.votewebback.Entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@IdClass(VoteStudentIdKey.class)
 @Table(name="User")
 public class UserEntity {
     @Id
-    @ManyToOne
-    @MapsId("student_id")
-    @JoinColumn(name="student_id")
-    private StudentEntity studentid;
-    @Id
-    @ManyToOne
-    @MapsId("vote_id")
-    @JoinColumn(name = "vote_id")
-    private VoteEntity voteid;
-
-    @Column(name = "email_confirm")
-    private String emailconfirm;
-    @Column(name = "vote_confirm")
-    private boolean voteconfirm;
-
-
-
-
-
+    @Column(name="user_id",unique = true)
+    private String userid;
+    @Column(name="user_password")
+    private String userpassword;
+    @Column(name="user_name")
+    private String username;
+    @Column(name="user_tel")
+    private String usertel;
+    @Column(name="user_email",unique = true)
+    private String useremail;
 }

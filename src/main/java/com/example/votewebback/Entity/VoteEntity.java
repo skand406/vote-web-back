@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @Table(name="Vote")
 public class VoteEntity {
     @ManyToOne
-    @JoinColumn(name="manager_id")
-    private ManagerEntity managerid;
+    @JoinColumn(name="user_id")
+    private UserEntity userid;
 
 
     @Column(name = "vote_name")

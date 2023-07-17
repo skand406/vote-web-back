@@ -1,20 +1,41 @@
 package com.example.votewebback.Controller;
 
+import com.example.votewebback.Service.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
-    @PostMapping("/{vote_id}/{student_id}")
-    public String UserCheck(@PathVariable("vote_id") String vote_id, @PathVariable("student_id") String student_id){
+    private final UserService userService;
+
+
+
+
+    @PostMapping("/id")
+    public String ManagerID(){
         return "ok";
     }
-    @GetMapping("/message/URL/{vote_id}")
-    public String UserSendURL(@PathVariable("vote_id") String vote_id){
+    @GetMapping
+    public String ManagerList(){
         return "ok";
     }
-    @GetMapping("/message/result/{vote_id}")
-    public String UserSendResult(@PathVariable("vote_id") String vote_id){
+    @GetMapping("/{manager_id}")
+    public String ManagerInfo(@PathVariable("manager_id") String manager_id){
         return "ok";
     }
+    @PutMapping("/modify/{manager_id}")
+    public String ManagerModify(@PathVariable("manager_id") String manager_id){
+        return "ok";
+    }
+    @PutMapping("/{manager_id}/pw")
+    public String ManagerResetPW(@PathVariable("manager_id") String manager_id){
+        return "ok";
+    }
+    @DeleteMapping("/{manager_id}")
+    public String ManagerRemove(@PathVariable("manager_id") String manager_id){
+        return "ok";
+    }
+
 }

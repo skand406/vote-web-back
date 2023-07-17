@@ -16,17 +16,17 @@ public class RequestDTO {
         private VoteType vote_type;
         private int grade;
         private String major;
-        private String manager_id;
+        private String user_id;
         private boolean vote_active;
     }
 
     @Getter
-    public static class ManagerDTO {
-        private String manager_name;
-        private String manager_tel;
-        private String manager_email;
-        private String manager_id;
-        private String manager_password;
+    public static class UserDTO {
+        private String user_name;
+        private String user_tel;
+        private String user_email;
+        private String user_id;
+        private String user_password;
     }
 
     @Getter

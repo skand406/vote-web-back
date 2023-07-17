@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum VoteType {
-    MONO,POLY
+    MONO,POLY,Referendum
 }
