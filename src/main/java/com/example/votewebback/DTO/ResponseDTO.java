@@ -1,5 +1,6 @@
 package com.example.votewebback.DTO;
 
+import com.example.votewebback.Entity.VoteEntity;
 import com.example.votewebback.Entity.VoteType;
 import lombok.Getter;
 
@@ -18,6 +19,8 @@ public class ResponseDTO {
         private int grade;
         private String major;
         private String user_id;
+
+
     }
 
     @Getter

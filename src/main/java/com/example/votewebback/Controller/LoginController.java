@@ -16,13 +16,16 @@ import java.util.Map;
 public class LoginController {
     private final UserService userService;
 
-    /*@PostMapping("/login")
-    public String login(@RequestBody Map<String,String> requestData){
-        String managerPassword = requestData.get("manager_password");
-        String managerId = requestData.get("manager_id");
+    @PostMapping("/login")
+    public Map<String, String> login(@RequestParam("user_id") String user_id,@RequestParam("user_password") String user_password){
+        /*String userPassword = requestData.get("user_password");
+        String userId = requestData.get("user_id");*/
 
-        return "ok";
-    }*/
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("id",user_id);
+        map.put("password",user_password);
+        return map;
+    }
     @GetMapping("/login/success")
     public ResponseEntity notSesstion() {
         System.out.println("로그인 성공");

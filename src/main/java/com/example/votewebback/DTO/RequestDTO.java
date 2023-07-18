@@ -1,11 +1,14 @@
 package com.example.votewebback.DTO;
 
+import com.example.votewebback.Entity.VoteEntity;
 import com.example.votewebback.Entity.VoteType;
 import lombok.Getter;
+
 
 import java.time.LocalDate;
 
 public class RequestDTO {
+
     @Getter
     public static class VoteDTO {
         private String vote_id;
@@ -18,6 +21,18 @@ public class RequestDTO {
         private String major;
         private String user_id;
         private boolean vote_active;
+        public VoteDTO(VoteEntity vote) {
+            this.vote_id = vote.getVoteid();
+            this.vote_bundle_id = vote.getVotebundleid();
+            this.start_date = start_date;
+            this.end_date = end_date;
+            this.vote_name = vote_name;
+            this.vote_type = vote_type;
+            this.grade = grade;
+            this.major = major;
+            this.user_id = user_id;
+            this.vote_active = vote_active;
+        }
     }
 
     @Getter

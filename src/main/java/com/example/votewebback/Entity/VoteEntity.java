@@ -23,6 +23,8 @@ public class VoteEntity {
     @Id
     @Column(name = "vote_id")
     private String voteid;
+    @Column(name = "vote_bundle_id")
+    private String votebundleid;
     @Column(name = "major")
     private String major;
     @Column(name = "grade")
