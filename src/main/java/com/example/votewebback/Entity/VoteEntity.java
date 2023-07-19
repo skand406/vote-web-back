@@ -37,5 +37,7 @@ public class VoteEntity {
     private LocalDate enddate;
     @Column(name = "last_end_date")
     private LocalDate lastenddate;
+
+
 }
 

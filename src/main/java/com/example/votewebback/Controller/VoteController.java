@@ -2,20 +2,21 @@ package com.example.votewebback.Controller;
 
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Service.UserService;
 import com.example.votewebback.Service.VoteService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/votes")
+@RequiredArgsConstructor
 public class VoteController {
-
-    private VoteService voteService;
-
+    private final VoteService voteService;
     @PostMapping("/register")
     public ResponseDTO.VoteDTO VoteAdd(@RequestBody RequestDTO.VoteDTO requestVoteDTO){
-        ResponseDTO.VoteDTO responseVoteDTO = voteService.CreateVote(requestVoteDTO);
+        ResponseDTO.VoteDTO responseVoteDTO=voteService. CreateVote(requestVoteDTO);
         return responseVoteDTO;
     }
     @GetMapping("/result/{vote_id}")
@@ -24,8 +25,8 @@ public class VoteController {
     }
     @GetMapping
     public List<ResponseDTO.VoteDTO> VoteList(){
-        List<ResponseDTO.VoteDTO> responseVoteDTOList = voteService.ReadVoteList();
-        return responseVoteDTOList;
+        List<ResponseDTO.VoteDTO> voteDTOList=voteService.ReadVoteList();
+        return voteDTOList;
     }
     @GetMapping("/{user_id}")
     public String VoteList_user(@PathVariable("user_id") String user_id){

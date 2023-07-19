@@ -22,22 +22,23 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private LoginAuthenticationSuccessHandler loginAuthenticationSuccessHandler;
-    private LoginAuthenticationFailureHandler loginAuthenticationFailureHandler;
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf->csrf.disable())
             .authorizeHttpRequests((authorize)->authorize
-                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll());
-            /*.formLogin(formLogin->formLogin
-                    .loginProcessingUrl("/api/login")
+                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+                        .requestMatchers("/test/all").permitAll()
+                    .requestMatchers("/test/auth").authenticated())
+            .formLogin(form->form
+                    .loginPage("/login").permitAll());
+                    /*.loginProcessingUrl("/login")
                     .usernameParameter("user_id")
-                    .passwordParameter("user_password")
-                    .successHandler(loginAuthenticationSuccessHandler)
-                    .failureHandler(loginAuthenticationFailureHandler))
-            .sessionManagement(session -> session
+                    .passwordParameter("user_password"))*/
+
+            /*.sessionManagement(session -> session
                     .maximumSessions(1)
-                    .maxSessionsPreventsLogin(true));*/
+                    .maxSessionsPreventsLogin(true))*/;
 
 
         return http.build();

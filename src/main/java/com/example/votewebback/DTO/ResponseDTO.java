@@ -22,12 +22,6 @@ public class ResponseDTO {
         private String major;
         private String user_id;
 
-        UserEntity userEntity;
-
-        public VoteDTO() {
-
-        }
-
         public VoteDTO(VoteEntity vote) {
             this.vote_id = vote.getVoteid();
             this.vote_bundle_id = vote.getVotebundleid();
@@ -38,7 +32,7 @@ public class ResponseDTO {
             this.vote_type = vote.getVotetype();
             this.grade = vote.getGrade();
             this.major = vote.getMajor();
-            this.user_id = userEntity.getUserid();
+            this.user_id = String.valueOf(vote.getUserid());
         }
     }
 

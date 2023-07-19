@@ -10,20 +10,24 @@ import java.util.Map;
 @RestController
 @RequestMapping("/test")
 public class TestController {
-    @GetMapping("/get")
+   /* @GetMapping("/get")
     public ResponseDTO.VoteDTO getTest(){
-        ResponseDTO.VoteDTO vote = new ResponseDTO.VoteDTO();
+        ResponseDTO.VoteDTO vote;
 
         return vote;
-    }
+    }*/
     @GetMapping("/{id}")
     public int getTest_path(@PathVariable("id") int id){
 
         return id;
     }
-    @GetMapping("/user")
-    public String test(Principal user){
-        return "user만 접근";
+    @GetMapping("/all")
+    public String test1(){
+        return "모든 접근";
+    }
+    @GetMapping("/auth")
+    public String test2(){
+        return "제한 접근";
     }
     @PostMapping("/post")
     public Map<String,String> postTest(@RequestBody Map<String, String> requestData){

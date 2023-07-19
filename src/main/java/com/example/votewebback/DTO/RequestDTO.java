@@ -13,6 +13,7 @@ public class RequestDTO {
     public static class VoteDTO {
         private String vote_id;
         private String vote_bundle_id;
+
         private LocalDate start_date;
         private LocalDate end_date;
         private String vote_name;
@@ -22,9 +23,10 @@ public class RequestDTO {
         private String user_id;
         private boolean vote_active;
 
-        public VoteDTO(VoteEntity vote) {
+       /* public VoteDTO(VoteEntity vote) {
             this.vote_id = vote.getVoteid();
             this.vote_bundle_id = vote.getVotebundleid();
+            this.start_date = vote.getStartdate();
             this.end_date = vote.getEnddate();
             this.vote_name = vote.getVotename();
             this.vote_type = vote.getVotetype();
@@ -32,14 +34,8 @@ public class RequestDTO {
             this.major = vote.getMajor();
             this.user_id = getUser_id();
             this.vote_active = vote.isVoteactive();
-        }
-        public String getVoteBundleid() {
-            return vote_bundle_id;
-        }
+        }*/
 
-        public LocalDate getEndDate() {
-            return end_date;
-        }
     }
 
     @Getter

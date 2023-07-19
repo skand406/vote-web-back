@@ -26,33 +26,14 @@ public class LoginController {
         map.put("password",user_password);
         return map;
     }
-    @GetMapping("/login/success")
-    public ResponseEntity notSession() {
-        System.out.println("로그인 성공");
-        Map<String,Object> map = new HashMap<>();
-        map.put("result", 1);
-        return new ResponseEntity(map, HttpStatus.OK);
-    }
 
-    @GetMapping("/login/fail")
-    public ResponseEntity hello() {
-        System.out.println("로그인 실패");
-        Map<String,Object> map = new HashMap<>();
-        map.put("result", 0);
-        return new ResponseEntity(map, HttpStatus.OK);
-    }
-    @GetMapping("/user")
-    public String test(Principal user){
-        return "user만 접근";
-    }
     @GetMapping("/logout")
     public String logout(){
         return "ok";
     }
     @PostMapping("/signup")
-    public String signup(@RequestBody RequestDTO.UserDTO userDTO)
-    {
-        String status= userService.createUser(userDTO);
+    public String signup(@RequestBody RequestDTO.UserDTO requestUserDTO){
+        String status= userService.CreateUser(requestUserDTO);
         System.out.println(status);
 
         return status;

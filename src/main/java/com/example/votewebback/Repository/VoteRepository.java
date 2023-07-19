@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface VoteRepository extends JpaRepository<VoteEntity, String> {
 
-    List<VoteEntity> findByUserid(String user_id);
+    //List<VoteEntity> findByUserid(String user_id);
 
 }
