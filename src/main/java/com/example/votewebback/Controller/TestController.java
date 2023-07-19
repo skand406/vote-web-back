@@ -27,12 +27,12 @@ public class TestController {
     }
     @PostMapping("/post")
     public Map<String,String> postTest(@RequestBody Map<String, String> requestData){
-        String managerPassword = requestData.get("manager_password");
-        String managerId = requestData.get("manager_id");
+        String userPassword = requestData.get("user_password");
+        String userId = requestData.get("user_id");
 
         Map<String,String> map=new HashMap<String,String>();
-        map.put("manager_id",managerId);
-        map.put("manager_password",managerPassword);
+        map.put("user_id", userId);
+        map.put("user_password", userPassword);
         return map;
     }
 }

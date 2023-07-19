@@ -21,17 +21,24 @@ public class RequestDTO {
         private String major;
         private String user_id;
         private boolean vote_active;
+
         public VoteDTO(VoteEntity vote) {
             this.vote_id = vote.getVoteid();
             this.vote_bundle_id = vote.getVotebundleid();
-            this.start_date = start_date;
-            this.end_date = end_date;
-            this.vote_name = vote_name;
-            this.vote_type = vote_type;
-            this.grade = grade;
-            this.major = major;
-            this.user_id = user_id;
-            this.vote_active = vote_active;
+            this.end_date = vote.getEnddate();
+            this.vote_name = vote.getVotename();
+            this.vote_type = vote.getVotetype();
+            this.grade = vote.getGrade();
+            this.major = vote.getMajor();
+            this.user_id = getUser_id();
+            this.vote_active = vote.isVoteactive();
+        }
+        public String getVoteBundleid() {
+            return vote_bundle_id;
+        }
+
+        public LocalDate getEndDate() {
+            return end_date;
         }
     }
 

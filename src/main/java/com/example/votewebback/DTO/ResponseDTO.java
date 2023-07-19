@@ -1,5 +1,7 @@
 package com.example.votewebback.DTO;
 
+import com.example.votewebback.Entity.StudentEntity;
+import com.example.votewebback.Entity.UserEntity;
 import com.example.votewebback.Entity.VoteEntity;
 import com.example.votewebback.Entity.VoteType;
 import lombok.Getter;
@@ -20,7 +22,24 @@ public class ResponseDTO {
         private String major;
         private String user_id;
 
+        UserEntity userEntity;
 
+        public VoteDTO() {
+
+        }
+
+        public VoteDTO(VoteEntity vote) {
+            this.vote_id = vote.getVoteid();
+            this.vote_bundle_id = vote.getVotebundleid();
+            this.start_date = vote.getStartdate();
+            this.end_date = vote.getEnddate();
+            this.last_end_date = vote.getLastenddate();
+            this.vote_name = vote.getVotename();
+            this.vote_type = vote.getVotetype();
+            this.grade = vote.getGrade();
+            this.major = vote.getMajor();
+            this.user_id = userEntity.getUserid();
+        }
     }
 
     @Getter
@@ -42,9 +61,17 @@ public class ResponseDTO {
 
     @Getter
     public static class StudentDTO{
+
         private String student_id;
         private String student_name;
         private int student_grade;
         private String student_major;
+
+        public StudentDTO(StudentEntity student) {
+            this.student_id = student.getStudentid();
+            this.student_name = student.getStudentname();
+            this.student_grade = student.getStudentgrade();
+            this.student_major = student.getStudentmajor();
+        }
     }
 }

@@ -27,7 +27,7 @@ public class LoginController {
         return map;
     }
     @GetMapping("/login/success")
-    public ResponseEntity notSesstion() {
+    public ResponseEntity notSession() {
         System.out.println("로그인 성공");
         Map<String,Object> map = new HashMap<>();
         map.put("result", 1);
@@ -52,7 +52,7 @@ public class LoginController {
     @PostMapping("/signup")
     public String signup(@RequestBody RequestDTO.UserDTO userDTO)
     {
-        String status= userService.createManager(userDTO);
+        String status= userService.createUser(userDTO);
         System.out.println(status);
 
         return status;

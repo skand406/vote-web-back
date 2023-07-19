@@ -14,27 +14,27 @@ public class UserController {
 
 
     @PostMapping("/id")
-    public String ManagerID(){
+    public String UserID(){
         return "ok";
     }
     @GetMapping
-    public String ManagerList(){
+    public String UserList(){
         return "ok";
     }
-    @GetMapping("/{manager_id}")
-    public String ManagerInfo(@PathVariable("manager_id") String manager_id){
+    @GetMapping("/{user_id}")
+    public String UserInfo(@PathVariable("user_id") String user_id){
         return "ok";
     }
-    @PutMapping("/modify/{manager_id}")
-    public String ManagerModify(@PathVariable("manager_id") String manager_id){
+    @PutMapping("/modify/{user_id}")
+    public String UserModify(@PathVariable("user_id") String user_id){
         return "ok";
     }
-    @PutMapping("/{manager_id}/pw")
-    public String ManagerResetPW(@PathVariable("manager_id") String manager_id){
+    @PutMapping("/{user_id}/pw")
+    public String UserResetPW(@PathVariable("user_id") String user_id){
         return "ok";
     }
-    @DeleteMapping("/{manager_id}")
-    public String ManagerRemove(@PathVariable("manager_id") String manager_id){
+    @DeleteMapping("/{user_id}")
+    public String UserRemove(@PathVariable("user_id") String user_id){
         return "ok";
     }
 
