@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/elector")
 public class ElectorController {
     @PostMapping("/{vote_id}/{student_id}")
-    public String UserCheck(@PathVariable("vote_id") String vote_id, @PathVariable("student_id") String student_id){
+    public String ElectorCheck(@PathVariable("vote_id") String vote_id, @PathVariable("student_id") String student_id){
         return "ok";
     }
 

@@ -29,7 +29,7 @@ public class UserService {
         if(userRepository.findByUserid(userDTO.getUser_id())==null){
             UserEntity user = new UserEntity();
             user.setUseremail(userDTO.getUser_email());
-            user.setUserid(userDTO.getUser_email());
+            user.setUserid(userDTO.getUser_id());
             user.setUsername(userDTO.getUser_name());
             user.setUsertel(userDTO.getUser_tel());
             user.setUserpassword(passwordEncoder.encode(userDTO.getUser_password()));

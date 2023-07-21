@@ -2,6 +2,7 @@ package com.example.votewebback.Controller;
 
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Service.ElectorService;
 import com.example.votewebback.Service.UserService;
 import com.example.votewebback.Service.VoteService;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VoteController {
     private final VoteService voteService;
+    private final ElectorService electorService;
     @PostMapping("/register")
     public ResponseDTO.VoteDTO VoteAdd(@RequestBody RequestDTO.VoteDTO requestVoteDTO){
-        ResponseDTO.VoteDTO responseVoteDTO=voteService. CreateVote(requestVoteDTO);
+        ResponseDTO.VoteDTO responseVoteDTO = voteService.CreateVote(requestVoteDTO);
+        System.out.println(requestVoteDTO.getMajor());
+        System.out.println(requestVoteDTO.getGrade());
+        electorService.CreateElector(responseVoteDTO.getMajor(), responseVoteDTO.getGrade(), responseVoteDTO.getVote_id());
         return responseVoteDTO;
     }
     @GetMapping("/result/{vote_id}")

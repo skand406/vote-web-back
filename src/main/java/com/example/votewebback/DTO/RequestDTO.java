@@ -1,7 +1,9 @@
 package com.example.votewebback.DTO;
 
+import com.example.votewebback.Entity.StudentEntity;
 import com.example.votewebback.Entity.VoteEntity;
 import com.example.votewebback.Entity.VoteType;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 
@@ -21,7 +23,6 @@ public class RequestDTO {
         private int grade;
         private String major;
         private String user_id;
-        private boolean vote_active;
 
        /* public VoteDTO(VoteEntity vote) {
             this.vote_id = vote.getVoteid();
