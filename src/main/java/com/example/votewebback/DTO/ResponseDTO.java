@@ -4,13 +4,15 @@ import com.example.votewebback.Entity.StudentEntity;
 import com.example.votewebback.Entity.UserEntity;
 import com.example.votewebback.Entity.VoteEntity;
 import com.example.votewebback.Entity.VoteType;
+import com.example.votewebback.Repository.UserRepository;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-
 public class ResponseDTO {
     @Getter
     public static class VoteDTO {
+
         private String vote_id;
         private String vote_bundle_id;
         private LocalDate start_date;
@@ -32,7 +34,8 @@ public class ResponseDTO {
             this.vote_type = vote.getVotetype();
             this.grade = vote.getGrade();
             this.major = vote.getMajor();
-            this.user_id = String.valueOf(vote.getUserid());
+            UserEntity user = vote.getUserid();
+            this.user_id=user.getUserid();
         }
     }
 

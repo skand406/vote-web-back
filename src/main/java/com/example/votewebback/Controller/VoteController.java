@@ -19,9 +19,8 @@ public class VoteController {
     @PostMapping("/register")
     public ResponseDTO.VoteDTO VoteAdd(@RequestBody RequestDTO.VoteDTO requestVoteDTO){
         ResponseDTO.VoteDTO responseVoteDTO = voteService.CreateVote(requestVoteDTO);
-        System.out.println(requestVoteDTO.getMajor());
-        System.out.println(requestVoteDTO.getGrade());
-        electorService.CreateElector(responseVoteDTO.getMajor(), responseVoteDTO.getGrade(), responseVoteDTO.getVote_id());
+        //request에 vote_id 없어서 response 활용
+        electorService.CreateElector(requestVoteDTO.getMajor(), requestVoteDTO.getGrade(), responseVoteDTO.getVote_id());
         return responseVoteDTO;
     }
     @GetMapping("/result/{vote_id}")

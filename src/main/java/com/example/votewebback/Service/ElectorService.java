@@ -6,6 +6,7 @@ import com.example.votewebback.Repository.ElectorRepository;
 import com.example.votewebback.Repository.StudentRepository;
 import com.example.votewebback.Repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,13 +15,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ElectorService {
 
+    @Autowired
     private StudentRepository studentRepository;
+    @Autowired
     private ElectorRepository electorRepository;
-
+    @Autowired
     private VoteRepository voteRepository;
 
     public void CreateElector(String major,int grade, String vote_id) {
-            List<StudentEntity> studentList = null;
+            List<StudentEntity> studentList;
 
             if (major.equals("모든과") && grade == 0)
                 studentList = studentRepository.findAll();
