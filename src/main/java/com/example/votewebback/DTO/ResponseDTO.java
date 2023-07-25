@@ -1,9 +1,6 @@
 package com.example.votewebback.DTO;
 
-import com.example.votewebback.Entity.StudentEntity;
-import com.example.votewebback.Entity.UserEntity;
-import com.example.votewebback.Entity.VoteEntity;
-import com.example.votewebback.Entity.VoteType;
+import com.example.votewebback.Entity.*;
 import com.example.votewebback.Repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +32,7 @@ public class ResponseDTO {
             this.grade = vote.getGrade();
             this.major = vote.getMajor();
             UserEntity user = vote.getUserid();
-            this.user_id=user.getUserid();
+            this.user_id = user.getUserid();
         }
     }
 
@@ -54,6 +51,16 @@ public class ResponseDTO {
         private String candidate_spec;
         private String candidate_promise;
         private String img_path;
+
+        public CandidateDTO(CandidateEntity candidate) {
+            StudentEntity student = candidate.getStudentid();
+            this.student_id = student.getStudentid();
+            VoteEntity vote = candidate.getVoteid();
+            this.vote_id = vote.getVoteid();
+            this.candidate_spec = candidate.getCandidatespec();
+            this.candidate_promise = candidate.getCandidatepromise();
+            this.img_path = candidate.getImgpath();
+        }
     }
 
     @Getter

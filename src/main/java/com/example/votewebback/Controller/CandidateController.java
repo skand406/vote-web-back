@@ -1,13 +1,22 @@
 package com.example.votewebback.Controller;
 
+import com.example.votewebback.DTO.RequestDTO;
+import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Service.CandidateService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/candidates")
+@RequiredArgsConstructor
 public class CandidateController {
+
+    private final CandidateService candidateService;
     @PostMapping("/register")
-    public String CandidateAdd(){
-        return "ok";
+    public ResponseDTO.CandidateDTO CandidateAdd(@RequestBody RequestDTO.CandidateDTO requestCandidateDTO){
+        ResponseDTO.CandidateDTO responseCandidateDTO = candidateService.CreateCandidate(requestCandidateDTO);
+
+        return responseCandidateDTO;
     }
     @PostMapping("/img/upload")
     public String CandidateSaveImg(){
