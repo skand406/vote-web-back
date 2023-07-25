@@ -20,22 +20,22 @@ public class VoteService {
 
 
 
-    public ResponseDTO.VoteDTO CreateVote(RequestDTO.VoteDTO voteDTO){
+    public ResponseDTO.VoteDTO CreateVote(RequestDTO.VoteDTO requestVoteDTO){
         VoteEntity vote = new VoteEntity();
-        vote.setEnddate(voteDTO.getEnd_date());
-        vote.setStartdate(voteDTO.getStart_date());
-        vote.setLastenddate(voteDTO.getEnd_date().plusDays(30));
+        vote.setEnddate(requestVoteDTO.getEnd_date());
+        vote.setStartdate(requestVoteDTO.getStart_date());
+        vote.setLastenddate(requestVoteDTO.getEnd_date().plusDays(30));
         vote.setVoteid("vote_"+RandomCode.randomCode());
-        vote.setVotebundleid(voteDTO.getVote_bundle_id());
-        vote.setMajor(voteDTO.getMajor());
-        vote.setGrade(voteDTO.getGrade());
-        vote.setVotename(voteDTO.getVote_name());
-        vote.setVotetype(voteDTO.getVote_type());
-        vote.setUserid(userRepository.findByUserid(voteDTO.getUser_id()));
+        vote.setVotebundleid(requestVoteDTO.getVote_bundle_id());
+        vote.setMajor(requestVoteDTO.getMajor());
+        vote.setGrade(requestVoteDTO.getGrade());
+        vote.setVotename(requestVoteDTO.getVote_name());
+        vote.setVotetype(requestVoteDTO.getVote_type());
+        vote.setUserid(userRepository.findByUserid(requestVoteDTO.getUser_id()));
         this.voteRepository.save(vote);
 
-        ResponseDTO.VoteDTO responseVote=new ResponseDTO.VoteDTO(vote);
-        return responseVote;
+        ResponseDTO.VoteDTO responseVoteDTO = new ResponseDTO.VoteDTO(vote);
+        return responseVoteDTO;
     }
     public List<ResponseDTO.VoteDTO> ReadVoteList(){
         List<VoteEntity> voteList=voteRepository.findAll();
