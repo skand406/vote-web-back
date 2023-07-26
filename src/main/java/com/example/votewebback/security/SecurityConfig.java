@@ -38,7 +38,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf->csrf.disable())
             .authorizeHttpRequests(authorize->authorize
-                    .requestMatchers("/auth/**","/swagger-ui/**").permitAll()
+                    .requestMatchers("/**","/auth/**","/swagger-ui/**").permitAll()
                     .anyRequest().authenticated()
             ) //로그인이 된 상태여야함
             .sessionManagement(session -> session
