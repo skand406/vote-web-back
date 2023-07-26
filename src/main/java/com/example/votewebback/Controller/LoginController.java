@@ -1,36 +1,32 @@
 package com.example.votewebback.Controller;
 
 import com.example.votewebback.DTO.RequestDTO;
+import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Entity.UserEntity;
 import com.example.votewebback.Service.UserService;
+import com.example.votewebback.security.AuthService;
+import com.example.votewebback.security.LoginDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class LoginController {
     private final UserService userService;
+    private final AuthService authService;
 
-    @PostMapping("/login")
-    public Map<String, String> login(@RequestParam("user_id") String user_id,@RequestParam("user_password") String user_password){
-        /*String userPassword = requestData.get("user_password");
-        String userId = requestData.get("user_id");*/
 
-        Map<String,String> map=new HashMap<String,String>();
-        map.put("id",user_id);
-        map.put("password",user_password);
-        return map;
-    }
 
     @GetMapping("/logout")
     public String logout(){
         return "ok";
     }
+
     @PostMapping("/signup")
     public String signup(@RequestBody RequestDTO.UserDTO requestUserDTO){
         String status= userService.CreateUser(requestUserDTO);
@@ -38,6 +34,21 @@ public class LoginController {
 
         return status;
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginDTO.ResponseLogin> login(@RequestBody LoginDTO.RequsetLogin login){
+        UserEntity user = UserEntity.builder()
+                .userid(login.user_id())
+                .userpassword(login.user_password())
+                .build();
+        return ResponseEntity.ok(authService.authenticate(user));
+    }
+
+
+
+
+
     @GetMapping("/message/URL/{vote_id}")
     public String UserSendURL(@PathVariable("vote_id") String vote_id){
         return "ok";
@@ -46,4 +57,6 @@ public class LoginController {
     public String UserSendResult(@PathVariable("vote_id") String vote_id){
         return "ok";
     }
+
+
 }
