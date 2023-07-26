@@ -31,7 +31,7 @@ public class VoteService {
         vote.setGrade(requestVoteDTO.getGrade());
         vote.setVotename(requestVoteDTO.getVote_name());
         vote.setVotetype(requestVoteDTO.getVote_type());
-        vote.setUserid(userRepository.findByUserid(requestVoteDTO.getUser_id()));
+        vote.setUserid(userRepository.findByUserid(requestVoteDTO.getUser_id()).get());
         this.voteRepository.save(vote);
 
         ResponseDTO.VoteDTO responseVoteDTO = new ResponseDTO.VoteDTO(vote);

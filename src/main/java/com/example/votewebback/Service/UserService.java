@@ -26,7 +26,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public String CreateUser(RequestDTO.UserDTO userDTO){
-        if(userRepository.findByUserid(userDTO.getUser_id())==null){
+        if(userRepository.findByUserid(userDTO.getUser_id()).isEmpty()){
             UserEntity user = new UserEntity();
             user.setUseremail(userDTO.getUser_email());
             user.setUserid(userDTO.getUser_id());
