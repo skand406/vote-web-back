@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -21,6 +23,11 @@ public class LoginController {
     @GetMapping("/logout")
     public String logout(){
         return "ok";
+    }
+    @PostMapping("/id_checker")
+    public ResponseEntity<String> idChecker(@RequestBody Map<String,String> id){
+        String user_id=id.get("user_id");
+        return ResponseEntity.ok(userService.CheckUserID(user_id));
     }
 
     @PostMapping("/signup")
