@@ -38,9 +38,10 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf->csrf.disable())
             .authorizeHttpRequests(authorize->authorize
-                    .requestMatchers("/auth/**","/swagger-ui/**").permitAll()
-                    .anyRequest().authenticated()
-            ) //로그인이 된 상태여야함
+                    .requestMatchers("/**","/auth/**","/swagger-ui/**").permitAll()
+                    .requestMatchers("/votes/**").hasRole("USER")
+                    .anyRequest().authenticated() //그 외 인증 없이 접근x
+            )
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             ) //세션 사용 안함

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+@Getter
 public class ResponseDTO {
     @Getter
     public static class VoteDTO {
@@ -44,10 +45,10 @@ public class ResponseDTO {
         private String user_id;
 
         public UserDTO(UserEntity user) {
-            this.user_name = user_name;
-            this.user_tel = user_tel;
-            this.user_email = user_email;
-            this.user_id = user_id;
+            this.user_name = user.getUsername();
+            this.user_tel = user.getUsertel();
+            this.user_email = user.getUseremail();
+            this.user_id = user.getUserid();
         }
     }
 
@@ -85,4 +86,7 @@ public class ResponseDTO {
             this.student_major = student.getStudentmajor();
         }
     }
+
+    public record LoginDTO(String token){}
+
 }

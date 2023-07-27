@@ -32,43 +32,36 @@ public class UserEntity implements UserDetails{
     @Column(name="user_email",unique = true)
     private String useremail;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
 
-
-    @Override
+    @Override //권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority("user"));
     }
 
-    @Override
+    @Override//사용자 id 반환
     public String getUsername() {
         return userid;
     }
-    @Override
+    @Override//사용자 비번 반환
     public String getPassword() {
         return userpassword;
     }
 
-    public String getUserName() { return username; }
-
-    @Override
+    @Override//계정 만료 여부
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    @Override
+    @Override//계정 잠금 여부
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    @Override
+    @Override//패스워드 만료 여부
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
-    @Override
+    @Override//계정 사용 가능 여부
     public boolean isEnabled() {
         return true;
     }

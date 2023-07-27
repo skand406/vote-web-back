@@ -9,6 +9,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
+@Getter
 public class RequestDTO {
 
     @Getter
@@ -24,19 +25,6 @@ public class RequestDTO {
         private String major;
         private String user_id;
 
-       /* public VoteDTO(VoteEntity vote) {
-            this.vote_id = vote.getVoteid();
-            this.vote_bundle_id = vote.getVotebundleid();
-            this.start_date = vote.getStartdate();
-            this.end_date = vote.getEnddate();
-            this.vote_name = vote.getVotename();
-            this.vote_type = vote.getVotetype();
-            this.grade = vote.getGrade();
-            this.major = vote.getMajor();
-            this.user_id = getUser_id();
-            this.vote_active = vote.isVoteactive();
-        }*/
-
     }
 
     @Getter
@@ -44,10 +32,7 @@ public class RequestDTO {
         private String user_name;
         private String user_tel;
         private String user_email;
-        private String user_id;
-        private String user_password;
     }
-
     @Getter
     public static class CandidateDTO {
         private String student_id;
@@ -55,4 +40,7 @@ public class RequestDTO {
         private String candidate_spec;
         private String candidate_promise;
     }
+
+    public record LoginDTO(String user_id, String user_password){}
+
 }

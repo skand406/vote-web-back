@@ -5,10 +5,8 @@ import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Entity.UserEntity;
 import com.example.votewebback.Service.UserService;
 import com.example.votewebback.security.AuthService;
-import com.example.votewebback.security.LoginDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -24,21 +22,24 @@ public class LoginController {
     public String logout(){
         return "ok";
     }
+    @PostMapping("/id_checker")
+    public ResponseEntity<String> idChecker(@RequestBody Map<String,String> id){
+        String user_id=id.get("user_id");
+        return ResponseEntity.ok(userService.CheckUserID(user_id));
+    }
 
     @PostMapping("/signup")
-    public String signup(@RequestBody RequestDTO.UserDTO requestUserDTO){
-        String status= userService.CreateUser(requestUserDTO);
-        System.out.println(status);
-
-        return status;
+    public ResponseEntity<ResponseDTO.UserDTO> signup(@RequestBody RequestDTO.UserDTO requestUserDTO, @RequestBody RequestDTO.LoginDTO requestLoginDTO){
+        ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userService.CreateUser(requestUserDTO,requestLoginDTO));
+        return ResponseEntity.ok(responseUserDTO);
     }
 
 
     @PostMapping("/login")
-    public ResponseEntity<LoginDTO.ResponseLogin> login(@RequestBody LoginDTO.RequsetLogin login){
+    public ResponseEntity<ResponseDTO.LoginDTO> login(@RequestBody RequestDTO.LoginDTO requestLoginDTO){
         UserEntity user = UserEntity.builder()
-                .userid(login.user_id())
-                .userpassword(login.user_password())
+                .userid(requestLoginDTO.user_id())
+                .userpassword(requestLoginDTO.user_password())
                 .build();
         return ResponseEntity.ok(authService.authenticate(user));
     }
