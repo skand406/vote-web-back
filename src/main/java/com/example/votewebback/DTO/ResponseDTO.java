@@ -42,6 +42,13 @@ public class ResponseDTO {
         private String user_tel;
         private String user_email;
         private String user_id;
+
+        public UserDTO(UserEntity user) {
+            this.user_name = user_name;
+            this.user_tel = user_tel;
+            this.user_email = user_email;
+            this.user_id = user_id;
+        }
     }
 
     @Getter

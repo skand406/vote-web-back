@@ -20,8 +20,6 @@ public class LoginController {
     private final UserService userService;
     private final AuthService authService;
 
-
-
     @GetMapping("/logout")
     public String logout(){
         return "ok";

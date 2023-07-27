@@ -1,7 +1,10 @@
 package com.example.votewebback.Controller;
 
+import com.example.votewebback.DTO.RequestDTO;
+import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +17,8 @@ public class UserController {
 
 
     @PostMapping("/id")
-    public String UserID(){
-        return "ok";
+    public ResponseEntity<String> UserID(@RequestBody RequestDTO.UserDTO requestUserDTO){
+        return ResponseEntity.ok(userService.SearchUserid(requestUserDTO));
     }
     @GetMapping
     public String UserList(){

@@ -31,9 +31,4 @@ public class CandidateService {
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
         return responseCandidateDTO;
     }
-
-    @Override
-    public String toString() {
-        return "";
-    }
 }
