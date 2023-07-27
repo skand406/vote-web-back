@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+@Getter
 public class ResponseDTO {
     @Getter
     public static class VoteDTO {
@@ -85,7 +86,7 @@ public class ResponseDTO {
             this.student_major = student.getStudentmajor();
         }
     }
-    @Getter
+
     public record LoginDTO(String token){}
 
 }

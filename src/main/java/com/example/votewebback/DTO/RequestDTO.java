@@ -9,6 +9,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
+@Getter
 public class RequestDTO {
 
     @Getter
@@ -39,7 +40,7 @@ public class RequestDTO {
         private String candidate_spec;
         private String candidate_promise;
     }
-    @Getter
+
     public record LoginDTO(String user_id, String user_password){}
 
 }
