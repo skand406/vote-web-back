@@ -46,6 +46,8 @@ public class UserEntity implements UserDetails{
     public String getPassword() {
         return userpassword;
     }
+    //사용자 성명 반환
+    public String getUserName() { return username; }
 
     @Override//계정 만료 여부
     public boolean isAccountNonExpired() {

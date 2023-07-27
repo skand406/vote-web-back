@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Optional;
+
 
 @Service
 @Transactional
@@ -29,7 +31,19 @@ public class UserService {
        userRepository.save(user);
         return user;
     }
-
+    public String SearchUserid(RequestDTO.UserDTO RequestUserDTO) {
+        Optional<UserEntity> user = userRepository.findByUseremail(RequestUserDTO.getUser_email());
+        if (user.isEmpty()) {
+            return "가입한적 없는 이메일입니다.";
+        } else {
+            String user_id = user.get().getUserid();
+            if (user.get().getUserName().equals(RequestUserDTO.getUser_name())
+                    && user.get().getUsertel().equals(RequestUserDTO.getUser_tel()))
+                return user_id;
+            else
+                return "입력한 이메일이 저장된 이름과 전화번호가 일치하지 않습니다.";
+        }
+    }
     public String CheckUserID(String id){
         if(userRepository.findByUserid(id).isEmpty())
             return "ok";
