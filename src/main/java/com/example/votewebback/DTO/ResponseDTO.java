@@ -42,6 +42,13 @@ public class ResponseDTO {
         private String user_tel;
         private String user_email;
         private String user_id;
+
+        public UserDTO(UserEntity user) {
+            this.user_name = user.getUsername();
+            this.user_tel = user.getUsertel();
+            this.user_email = user.getUseremail();
+            this.user_id = user.getUserid();
+        }
     }
 
     @Getter
@@ -78,4 +85,7 @@ public class ResponseDTO {
             this.student_major = student.getStudentmajor();
         }
     }
+    @Getter
+    public record LoginDTO(String token){}
+
 }

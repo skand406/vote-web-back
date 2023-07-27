@@ -16,19 +16,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public String CreateUser(RequestDTO.UserDTO userDTO){
-        if(userRepository.findByUserid(userDTO.getUser_id()).isEmpty()){
-            UserEntity user = new UserEntity();
-            user.setUseremail(userDTO.getUser_email());
-            user.setUserid(userDTO.getUser_id());
-            user.setUsername(userDTO.getUser_name());
-            user.setUsertel(userDTO.getUser_tel());
-            user.setUserpassword(passwordEncoder.encode(userDTO.getUser_password()));
-            this.userRepository.save(user);
-            return "success";
-        }
-        else return "fail: already register manager";
+    public UserEntity CreateUser(RequestDTO.UserDTO userDTO, RequestDTO.LoginDTO requestLoginDTO){
+        if(!userRepository.findByUserid(requestLoginDTO.user_id()).isEmpty()){
+            throw new RuntimeException("이미 가입된 유저입니다.");
+        };
+           UserEntity user = UserEntity.builder()
+                    .useremail(userDTO.getUser_email())
+                    .userid(requestLoginDTO.user_id())
+                    .username(userDTO.getUser_name())
+                    .usertel(userDTO.getUser_tel())
+                    .userpassword(passwordEncoder.encode(requestLoginDTO.user_password()))
+                    .build();
+           userRepository.save(user);
+        return user;
     }
-
 
 }
