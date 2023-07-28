@@ -46,8 +46,8 @@ public class UserService {
     }
     public String CheckUserID(String id){
         if(userRepository.findByUserid(id).isEmpty())
-            return "ok";
-        return "already exits";
+            return "사용가능한 id입니다.";
+        return "중복된 id입니다.";
     }
 
 }

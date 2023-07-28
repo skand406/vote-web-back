@@ -4,7 +4,11 @@ import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Service.CandidateService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/candidates")
@@ -19,8 +23,10 @@ public class CandidateController {
         return responseCandidateDTO;
     }
     @PostMapping("/img/upload")
-    public String CandidateSaveImg(){
-        return "ok";
+    public ResponseEntity<String> CandidateSaveImg(@RequestParam String vote_id,@RequestParam String student_id,
+                                   @RequestParam("image") MultipartFile file) throws IOException {
+        String status = candidateService.UploadImage(file,vote_id,student_id);
+        return ResponseEntity.ok(status);
     }
     @GetMapping("/img/{vote_id}/{student_id}")
     public String CandidateInfoImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
