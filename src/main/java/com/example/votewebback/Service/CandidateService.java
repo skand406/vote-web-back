@@ -5,19 +5,24 @@ import javax.imageio.ImageIO;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+
+import org.apache.commons.io.IOUtils;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Entity.*;
 import com.example.votewebback.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +31,8 @@ public class CandidateService {
     private final CandidateRepository candidateRepository;
     private final VoteRepository voteRepository;
     private final StudentRepository studentRepository;
-    private final AmazonS3Client amazonS3Client;
+    @Autowired
+    private AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -47,7 +53,7 @@ public class CandidateService {
         return responseCandidateDTO;
     }
 
-    public String UploadImage(MultipartFile file,String vote_id,String student_id) throws IOException {
+    public String CreateImage(MultipartFile file, String vote_id, String student_id) throws IOException {
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
@@ -60,15 +66,13 @@ public class CandidateService {
                 double targetRatio = 350.0 / 400.0;
                 double actualRatio = (double) width / (double) height;
 
-
-
                 if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
                     if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
                         return "올바른 이미지 확장자가 아닙니다. (png, jpg 파일만 업로드 가능)";
                     }
 
-                    String fileName= "/img/" + vote_id + "-" + student_id;
-                    String fileUrl= "https://" + bucket + fileName;
+                    String fileName= "img/" + vote_id + "-" + student_id;
+                    String fileUrl= "https://" + bucket + "/" + fileName;
                     ObjectMetadata metadata= new ObjectMetadata();
                     metadata.setContentType(file.getContentType());
                     metadata.setContentLength(file.getSize());
@@ -86,9 +90,29 @@ public class CandidateService {
         }
         return "이미지 없음";
     }
+    public ResponseEntity<byte[]> ReadImage(String student_id,String vote_id){
+        String img = "img/"+vote_id+"-"+student_id;
+        S3Object s3Object = amazonS3Client.getObject(bucket, img);
+        String contentType = s3Object.getObjectMetadata().getContentType();
+        S3ObjectInputStream stream = s3Object.getObjectContent();
+
+        byte[] imageBytes;
+        try {
+            imageBytes = IOUtils.toByteArray(stream);
+        } catch (IOException e) {
+            // 에러 처리
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } finally {
+            IOUtils.closeQuietly(stream); // 스트림 닫기
+        }
 
 
-
+        // 이미지 바이트 배열을 Response로 반환
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType)) // 이미지 타입에 따라 변경 (JPEG, PNG 등)
+                .body(imageBytes);
+    }
 }
 
 

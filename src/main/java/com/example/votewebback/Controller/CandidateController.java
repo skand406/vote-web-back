@@ -24,14 +24,16 @@ public class CandidateController {
     }
     @PostMapping("/img/upload")
     public ResponseEntity<String> CandidateSaveImg(@RequestParam String vote_id,@RequestParam String student_id,
-                                   @RequestParam("image") MultipartFile file) throws IOException {
-        String status = candidateService.UploadImage(file,vote_id,student_id);
+                                                   @RequestParam("image") MultipartFile file) throws IOException {
+        String status = candidateService.CreateImage(file,vote_id,student_id);
         return ResponseEntity.ok(status);
     }
     @GetMapping("/img/{vote_id}/{student_id}")
-    public String CandidateInfoImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
-        return "ok";
+    public ResponseEntity<byte[]> CandidateInfoImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
+        return candidateService.ReadImage(student_id,vote_id);
+
     }
+
     @GetMapping("/student")
     public String StudentList(){
         return "ok";

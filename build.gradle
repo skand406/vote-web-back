@@ -43,7 +43,8 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     //S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
+    //이미지 조회
+    implementation 'commons-io:commons-io:2.11.0'
 }
 
 tasks.named('test') {
