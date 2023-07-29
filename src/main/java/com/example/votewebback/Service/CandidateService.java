@@ -3,11 +3,14 @@ package com.example.votewebback.Service;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Entity.*;
 import com.example.votewebback.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +26,10 @@ public class CandidateService {
     private final CandidateRepository candidateRepository;
     private final VoteRepository voteRepository;
     private final StudentRepository studentRepository;
+    private final AmazonS3Client amazonS3Client;
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
 
     public ResponseDTO.CandidateDTO CreateCandidate(RequestDTO.CandidateDTO requestCandidateDTO){
@@ -46,8 +52,7 @@ public class CandidateService {
             try {
                 byte[] bytes = file.getBytes();
                 //확장자 검사
-                String originalFileName = file.getOriginalFilename();
-                String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+                String fileExtension = file.getContentType();
                 //사진 비율 검사
                 BufferedImage image = ImageIO.read(file.getInputStream());
                 int width = image.getWidth();
@@ -55,13 +60,22 @@ public class CandidateService {
                 double targetRatio = 350.0 / 400.0;
                 double actualRatio = (double) width / (double) height;
 
+
+
                 if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
-                    if (!fileExtension.equalsIgnoreCase("png") && !fileExtension.equalsIgnoreCase("jpg")) {
+                    if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
                         return "올바른 이미지 확장자가 아닙니다. (png, jpg 파일만 업로드 가능)";
                     }
-                    Path path = Paths.get("D:/img/"+ vote_id + "-" + student_id +".png");
-                    Files.write(path, bytes);
-                    return "이미지 등록 성공 (크기: "+ width +", "+ height +")";
+
+                    String fileName= "/img/" + vote_id + "-" + student_id;
+                    String fileUrl= "https://" + bucket + fileName;
+                    ObjectMetadata metadata= new ObjectMetadata();
+                    metadata.setContentType(file.getContentType());
+                    metadata.setContentLength(file.getSize());
+                    amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
+
+                    return "이미지 등록 성공 (크기: "+ width +", "+ height +")\n"
+                            + fileUrl;
                 } else {
                     return "이미지가 올바르지 않습니다. (원하는 크기: 3.5:4.0)";
                 }
@@ -72,4 +86,9 @@ public class CandidateService {
         }
         return "이미지 없음";
     }
+
+
+
 }
+
+
