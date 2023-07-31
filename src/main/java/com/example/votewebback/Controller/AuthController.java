@@ -8,6 +8,7 @@ import com.example.votewebback.Entity.VoteEntity;
 import com.example.votewebback.Repository.StudentRepository;
 import com.example.votewebback.Repository.VoteRepository;
 import com.example.votewebback.Service.ElectorService;
+import com.example.votewebback.Service.RedisService;
 import com.example.votewebback.Service.UserService;
 import com.example.votewebback.security.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class AuthController {
     private final AuthService authService;
     private final ElectorService electorService;
 
+    private final RedisService redisService;
 
     @GetMapping("/logout")
     public String logout(){
@@ -53,12 +55,20 @@ public class AuthController {
 
     @PostMapping("/{vote_id}/{student_id}")
     public ResponseEntity<String> ElectorChecker(@PathVariable("vote_id") String vote_id, @PathVariable("student_id") String student_id,
-                                               @RequestBody RequestDTO.UserDTO requestUserDTO){
-        String status = electorService.CheckElectorAuthority(vote_id,student_id,requestUserDTO.getUser_email());
+                                               @RequestBody Map<String,String> email){
+        String student_email= email.get("student_email");
+
+        String status = electorService.CheckElectorAuthority(vote_id,student_id,student_email);
         return ResponseEntity.ok(status);
     }
 
+    @PostMapping("/email")
+    public ResponseEntity<String> AuthEmail(@RequestBody Map<String,String> code){
+        String authCode=code.get("code");
+        if(redisService.getData(authCode).isEmpty()) return ResponseEntity.ok("인증에 실패했습니다.");
 
+        else return ResponseEntity.ok("인증에 성공했습니다.");
+    }
 
     @GetMapping("/message/URL/{vote_id}")
     public String UserSendURL(@PathVariable("vote_id") String vote_id){
