@@ -2,7 +2,12 @@ package com.example.votewebback.Controller;
 
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Entity.StudentEntity;
 import com.example.votewebback.Entity.UserEntity;
+import com.example.votewebback.Entity.VoteEntity;
+import com.example.votewebback.Repository.StudentRepository;
+import com.example.votewebback.Repository.VoteRepository;
+import com.example.votewebback.Service.ElectorService;
 import com.example.votewebback.Service.UserService;
 import com.example.votewebback.security.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +19,11 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-public class LoginController {
+public class AuthController {
     private final UserService userService;
     private final AuthService authService;
+    private final ElectorService electorService;
+
 
     @GetMapping("/logout")
     public String logout(){
@@ -44,7 +51,12 @@ public class LoginController {
         return ResponseEntity.ok(authService.authenticate(user));
     }
 
-
+    @PostMapping("/{vote_id}/{student_id}")
+    public ResponseEntity<String> ElectorChecker(@PathVariable("vote_id") String vote_id, @PathVariable("student_id") String student_id,
+                                               @RequestBody RequestDTO.UserDTO requestUserDTO){
+        String status = electorService.CheckElectorAuthority(vote_id,student_id,requestUserDTO.getUser_email());
+        return ResponseEntity.ok(status);
+    }
 
 
 
