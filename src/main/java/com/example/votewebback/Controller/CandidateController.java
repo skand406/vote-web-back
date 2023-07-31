@@ -51,8 +51,11 @@ public class CandidateController {
         return "ok";
     }
     @PutMapping("/img/modify/{vote_id}/{student_id}")
-    public String CandidateModifyImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
-        return "ok";
+    public ResponseEntity<String> CandidateModifyImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id,
+                                                     @RequestParam("image") MultipartFile file)throws IOException{
+        String status = candidateService.UpdateImage(file,vote_id,student_id);
+
+        return ResponseEntity.ok(status);
     }
     @DeleteMapping("{vote_id}/{student_id}")
     public String CandidateRemove(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){

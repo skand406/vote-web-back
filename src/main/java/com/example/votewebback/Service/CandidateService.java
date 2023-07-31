@@ -113,6 +113,46 @@ public class CandidateService {
                 .contentType(MediaType.parseMediaType(contentType)) // 이미지 타입에 따라 변경 (JPEG, PNG 등)
                 .body(imageBytes);
     }
+
+    public String UpdateImage(MultipartFile file, String vote_id, String student_id) throws IOException {
+        if (!file.isEmpty()) {
+            try {
+                byte[] bytes = file.getBytes();
+                //확장자 검사
+                String fileExtension = file.getContentType();
+                //사진 비율 검사
+                BufferedImage image = ImageIO.read(file.getInputStream());
+                int width = image.getWidth();
+                int height = image.getHeight();
+                double targetRatio = 350.0 / 400.0;
+                double actualRatio = (double) width / (double) height;
+
+                if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
+                    if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
+                        return "올바른 이미지 확장자가 아닙니다. (png, jpg 파일만 업로드 가능)";
+                    }
+                    String fileNameToDelete = "img/" + vote_id + "-" + student_id;
+                    amazonS3Client.deleteObject(bucket, fileNameToDelete);
+
+                    String fileName= "img/" + vote_id + "-" + student_id;
+                    String fileUrl= "https://" + bucket + "/" + fileName;
+                    ObjectMetadata metadata= new ObjectMetadata();
+                    metadata.setContentType(file.getContentType());
+                    metadata.setContentLength(file.getSize());
+                    amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
+
+                    return "이미지 교체 성공 (크기: "+ width +", "+ height +")\n"
+                            + fileUrl;
+                } else {
+                    return "이미지가 올바르지 않습니다. (원하는 크기: 3.5:4.0)";
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "이미지 업로드 실패";
+            }
+        }
+        return "이미지 없음";
+    }
 }
 
 
