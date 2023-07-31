@@ -52,7 +52,17 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok(authService.authenticate(user));
     }
-
+    @PostMapping("/user/id")
+    public ResponseEntity<String> UserID(@RequestBody RequestDTO.UserDTO requestUserDTO){
+        return ResponseEntity.ok(userService.SearchUserid(requestUserDTO));
+    }
+    @PutMapping("/user/pw")
+    public ResponseEntity<String> UserResetPW(@RequestBody Map<String,String> user){
+        String user_id = user.get("user_id");
+        String user_email = user.get("user_email");
+        String status = userService.UpdateUserPW(user_id,user_email);
+        return ResponseEntity.ok(status);
+    }
     @PostMapping("/{vote_id}/{student_id}")
     public ResponseEntity<String> ElectorChecker(@PathVariable("vote_id") String vote_id, @PathVariable("student_id") String student_id,
                                                @RequestBody Map<String,String> email){

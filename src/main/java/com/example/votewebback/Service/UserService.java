@@ -2,6 +2,7 @@ package com.example.votewebback.Service;
 
 import com.example.votewebback.DTO.*;
 import com.example.votewebback.Entity.*;
+import com.example.votewebback.RandomCode;
 import com.example.votewebback.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public UserEntity CreateUser(RequestDTO.UserDTO userDTO, RequestDTO.LoginDTO requestLoginDTO){
        UserEntity user = UserEntity.builder()
@@ -50,4 +52,15 @@ public class UserService {
         return "중복된 id입니다.";
     }
 
+    @Transactional
+    public String UpdateUserPW(String user_id,String user_email){
+        UserEntity user=userRepository.findByUserid(user_id).get();
+        if(user.getUseremail().equals(user_email)){
+            String temPW=RandomCode.randomCode();
+            user.setUserpassword(passwordEncoder.encode(temPW));
+            emailService.sendMail(user_email,temPW);
+            return "임시 비밀번호가 발급되었습니다.";
+        }
+        else return "이메일이 맞지 않습니다.";
+    }
 }

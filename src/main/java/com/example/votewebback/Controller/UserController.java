@@ -16,10 +16,7 @@ public class UserController {
 
 
 
-    @PostMapping("/id")
-    public ResponseEntity<String> UserID(@RequestBody RequestDTO.UserDTO requestUserDTO){
-        return ResponseEntity.ok(userService.SearchUserid(requestUserDTO));
-    }
+
     @GetMapping
     public String UserList(){
         return "ok";
@@ -32,10 +29,7 @@ public class UserController {
     public String UserModify(@PathVariable("user_id") String user_id){
         return "ok";
     }
-    @PutMapping("/{user_id}/pw")
-    public String UserResetPW(@PathVariable("user_id") String user_id){
-        return "ok";
-    }
+
     @DeleteMapping("/{user_id}")
     public String UserRemove(@PathVariable("user_id") String user_id){
         return "ok";
