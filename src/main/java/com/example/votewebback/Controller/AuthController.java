@@ -31,8 +31,8 @@ public class AuthController {
     public String logout(){
         return "ok";
     }
-    @PostMapping("/id_checker")
-    public ResponseEntity<String> idChecker(@RequestBody Map<String,String> id){
+    @PostMapping("/id-checker")
+    public ResponseEntity<String> IdChecker(@RequestBody Map<String,String> id){
         String user_id=id.get("user_id");
         return ResponseEntity.ok(userService.CheckUserID(user_id));
     }
@@ -53,9 +53,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.authenticate(user));
     }
 
-    @PostMapping("/{vote_id}/{student_id}")
+    @PostMapping("/elector/{vote_id}/{student_id}")
     public ResponseEntity<String> ElectorChecker(@PathVariable("vote_id") String vote_id, @PathVariable("student_id") String student_id,
-                                               @RequestBody Map<String,String> email){
+                                                 @RequestBody Map<String,String> email){
         String student_email= email.get("student_email");
 
         String status = electorService.CheckElectorAuthority(vote_id,student_id,student_email);
@@ -69,7 +69,12 @@ public class AuthController {
 
         else return ResponseEntity.ok("인증에 성공했습니다.");
     }
-
+    @PostMapping("/email-checker")
+    public ResponseEntity<String> EmailChecker(@RequestBody Map<String,String> email){
+        String user_email = email.get("user_email");
+        String status = userService.CheckUserEmail(user_email);
+        return ResponseEntity.ok(status);
+    }
     @GetMapping("/message/URL/{vote_id}")
     public String UserSendURL(@PathVariable("vote_id") String vote_id){
         return "ok";

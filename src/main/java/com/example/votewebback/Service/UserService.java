@@ -21,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final RedisService redisService;
 
     public UserEntity CreateUser(RequestDTO.UserDTO userDTO, RequestDTO.LoginDTO requestLoginDTO){
        UserEntity user = UserEntity.builder()
@@ -46,8 +47,8 @@ public class UserService {
                 return "입력한 이메일이 저장된 이름과 전화번호가 일치하지 않습니다.";
         }
     }
-    public String CheckUserID(String id){
-        if(userRepository.findByUserid(id).isEmpty())
+    public String CheckUserID(String user_id){
+        if(userRepository.findByUserid(user_id).isEmpty())
             return "사용가능한 id입니다.";
         return "중복된 id입니다.";
     }
@@ -62,5 +63,17 @@ public class UserService {
             return "임시 비밀번호가 발급되었습니다.";
         }
         else return "이메일이 맞지 않습니다.";
+    }
+
+    public String CheckUserEmail(String user_email) {
+        if(userRepository.findByUseremail(user_email).isEmpty()) {
+            String code = RandomCode.randomCode();
+            redisService.setDataExpire(code, user_email, 60 * 5L);
+            emailService.sendMail(user_email, code);
+            return "인증 번호가 전송되었습니다.";
+        }
+        else {
+            return "이미 가입된 이메일입니다.";
+        }
     }
 }
