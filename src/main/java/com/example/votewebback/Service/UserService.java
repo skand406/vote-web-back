@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -33,6 +35,16 @@ public class UserService {
                 .build();
        userRepository.save(user);
         return user;
+    }
+    public List<ResponseDTO.UserDTO> SearchUserAll(){
+        List<UserEntity> userList = userRepository.findAll();
+        List<ResponseDTO.UserDTO> responseUserList = new ArrayList<>();
+
+        for(UserEntity user:userList){
+            ResponseDTO.UserDTO responseUser=new ResponseDTO.UserDTO(user);
+            responseUserList.add(responseUser);
+        }
+        return responseUserList;
     }
     public String SearchUserid(RequestDTO.UserDTO RequestUserDTO) {
         Optional<UserEntity> user = userRepository.findByUseremail(RequestUserDTO.getUser_email());

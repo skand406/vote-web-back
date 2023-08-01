@@ -45,7 +45,7 @@ public class ResponseDTO {
         private String user_id;
 
         public UserDTO(UserEntity user) {
-            this.user_name = user.getUsername();
+            this.user_name = user.getUserName();
             this.user_tel = user.getUsertel();
             this.user_email = user.getUseremail();
             this.user_id = user.getUserid();

@@ -7,19 +7,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-
-
-
-
     @GetMapping
-    public String UserList(){
-        return "ok";
+    public List<ResponseDTO.UserDTO> UserList(){
+        List<ResponseDTO.UserDTO> userDTOList = userService.SearchUserAll();
+        return userDTOList;
     }
     @GetMapping("/{user_id}")
     public String UserInfo(@PathVariable("user_id") String user_id){
