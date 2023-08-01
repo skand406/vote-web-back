@@ -6,10 +6,8 @@ import com.example.votewebback.RandomCode;
 import com.example.votewebback.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +43,13 @@ public class UserService {
             responseUserList.add(responseUser);
         }
         return responseUserList;
+    }
+    public ResponseDTO.UserDTO SearchUserById(String user_id){
+
+        Optional<UserEntity> userOptional = userRepository.findByUserid(user_id);
+        ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userOptional.get());
+
+        return responseUserDTO;
     }
     public String SearchUserid(RequestDTO.UserDTO RequestUserDTO) {
         Optional<UserEntity> user = userRepository.findByUseremail(RequestUserDTO.getUser_email());

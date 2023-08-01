@@ -1,10 +1,9 @@
 package com.example.votewebback.Controller;
 
-import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Entity.UserEntity;
 import com.example.votewebback.Service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +20,9 @@ public class UserController {
         return userDTOList;
     }
     @GetMapping("/{user_id}")
-    public String UserInfo(@PathVariable("user_id") String user_id){
-        return "ok";
+    public ResponseDTO.UserDTO UserInfo(@PathVariable("user_id") String user_id){
+        ResponseDTO.UserDTO userDTOList = userService.SearchUserById(user_id);
+        return userDTOList;
     }
     @PutMapping("/modify/{user_id}")
     public String UserModify(@PathVariable("user_id") String user_id){
