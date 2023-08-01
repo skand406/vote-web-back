@@ -37,8 +37,9 @@ public class VoteController {
         return "ok";
     }
     @GetMapping("/{vote_bundle_id}")
-    public String VoteList_bundle(@PathVariable("vote_bundle_id") String vote_bundle_id){
-        return "ok";
+    public List<ResponseDTO.VoteDTO> VoteList_bundle(@PathVariable("vote_bundle_id") String vote_bundle_id){
+        List<ResponseDTO.VoteDTO> voteDTOList = voteService.ReadVoteBundleList(vote_bundle_id);
+        return voteDTOList;
     }
     @PutMapping("/{vote_id}")
     public String VoteModify(@PathVariable("vote_id") String vote_id){

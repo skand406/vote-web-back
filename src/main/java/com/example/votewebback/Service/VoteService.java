@@ -39,14 +39,24 @@ public class VoteService {
     }
     public List<ResponseDTO.VoteDTO> ReadVoteList(){
         List<VoteEntity> voteList=voteRepository.findAll();
-        System.out.println("voteLsit = "+ voteList);
+        System.out.println("voteList = "+ voteList);
         List<ResponseDTO.VoteDTO> responseVoteList = new ArrayList<>();
 
         for(VoteEntity vote:voteList){
             ResponseDTO.VoteDTO responseVote=new ResponseDTO.VoteDTO(vote);
             responseVoteList.add(responseVote);
         }
+        return responseVoteList;
+    }
 
+    public List<ResponseDTO.VoteDTO> ReadVoteBundleList(String vote_bundle_id){
+        List<VoteEntity> voteList = voteRepository.findByVotebundleid(vote_bundle_id);
+        List<ResponseDTO.VoteDTO> responseVoteList = new ArrayList<>();
+
+        for(VoteEntity vote : voteList){
+            ResponseDTO.VoteDTO responseVote = new ResponseDTO.VoteDTO(vote);
+            responseVoteList.add(responseVote);
+        }
 
         return responseVoteList;
     }
