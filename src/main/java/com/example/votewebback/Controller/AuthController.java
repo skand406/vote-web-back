@@ -75,14 +75,6 @@ public class AuthController {
         String status = userService.CheckUserEmail(user_email);
         return ResponseEntity.ok(status);
     }
-    @GetMapping("/message/URL/{vote_id}")
-    public String UserSendURL(@PathVariable("vote_id") String vote_id){
-        return "ok";
-    }
-    @GetMapping("/message/result/{vote_id}")
-    public String UserSendResult(@PathVariable("vote_id") String vote_id){
-        return "ok";
-    }
 
 
 }
