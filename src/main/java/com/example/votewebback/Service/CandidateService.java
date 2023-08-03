@@ -53,6 +53,13 @@ public class CandidateService {
         return responseCandidateDTO;
     }
 
+    public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String student_id){
+        VoteEntity vote = voteRepository.findByVoteid(vote_id);
+        StudentEntity student = studentRepository.findByStudentid(student_id);
+        CandidateEntity candidate = candidateRepository.findByVoteidAndStudentid(vote, student);
+        ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
+        return responseCandidateDTO;
+    }
     public String CreateImage(MultipartFile file, String vote_id, String student_id) throws IOException {
         if (!file.isEmpty()) {
             try {

@@ -48,11 +48,11 @@ public class PublicContorller {
         return candidateService.ReadImage(student_id,vote_id);
 
     }
-    @GetMapping("/candidate/{vote_id}/{student_id}")
-    public String CandidateInfo(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
-        return "ok";
+    @GetMapping("candidate/{vote_id}/{student_id}")
+    public ResponseDTO.CandidateDTO CandidateInfo(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
+        return candidateService.SearchCandidate(vote_id, student_id);
     }
-    @GetMapping("/candiate/{vote_id}")
+    @GetMapping("candiate/{vote_id}")
     public String CandidateList(@PathVariable("vote_id") String vote_id){
         return "ok";
     }
