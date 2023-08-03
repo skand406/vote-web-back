@@ -20,6 +20,7 @@ public class UserController {
     private final VoteService voteService;
     private final ElectorService electorService;
     private final CandidateService candidateService;
+    private final StudentService studentService;
 
     //유저 관련
     @GetMapping("/user/{user_id}")
@@ -86,9 +87,10 @@ public class UserController {
     public String CandidateModify(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
         return "ok";
     }
-    @GetMapping("/candiate/student")
-    public String StudentList(){
-        return "ok";
+    @GetMapping("/candidate/student")
+    public List<ResponseDTO.StudentDTO> StudentList(){
+        List<ResponseDTO.StudentDTO> responseStudentList = studentService.ReadStudentList();
+        return responseStudentList;
     }
 
     //카카오톡 관련
