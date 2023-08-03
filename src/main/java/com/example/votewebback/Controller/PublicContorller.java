@@ -18,6 +18,7 @@ public class PublicContorller {
     private final UserService userService;
     private final VoteService voteService;
     private final CandidateService candidateService;
+
     //유저 관련
     @PostMapping("user/id")
     public ResponseEntity<String> UserID(@RequestBody RequestDTO.UserDTO requestUserDTO){
@@ -30,6 +31,7 @@ public class PublicContorller {
         String status = userService.UpdateUserPW(user_id,user_email);
         return ResponseEntity.ok(status);
     }
+
     //투표 관련
     @GetMapping("vote/{vote_bundle_id}") //투표 번들 id로 투표 리스트 찾기
     public List<ResponseDTO.VoteDTO> VoteList_bundle(@PathVariable("vote_bundle_id") String vote_bundle_id){
@@ -52,9 +54,10 @@ public class PublicContorller {
     public ResponseDTO.CandidateDTO CandidateInfo(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
         return candidateService.SearchCandidate(vote_id, student_id);
     }
-    @GetMapping("candiate/{vote_id}")
-    public String CandidateList(@PathVariable("vote_id") String vote_id){
-        return "ok";
+    @GetMapping("candidate/{vote_id}")
+    public List<ResponseDTO.CandidateDTO> CandidateList(@PathVariable("vote_id") String vote_id){
+        List<ResponseDTO.CandidateDTO> responseCandidateList = candidateService.ReadCandidateListByVoteId(vote_id);
+        return responseCandidateList;
     }
 
 }

@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +39,18 @@ public class CandidateService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    public List<ResponseDTO.CandidateDTO> ReadCandidateListByVoteId(String vote_id){
+        VoteEntity vote = voteRepository.findByVoteid(vote_id);
+        List<CandidateEntity> candidateList = candidateRepository.findByVoteid(vote);
+        List<ResponseDTO.CandidateDTO> responseCandidateList = new ArrayList<>();
 
+        for(CandidateEntity candidate : candidateList){
+            ResponseDTO.CandidateDTO responseCandidate = new ResponseDTO.CandidateDTO(candidate);
+            responseCandidateList.add(responseCandidate);
+        }
+
+        return responseCandidateList;
+    }
     public ResponseDTO.CandidateDTO CreateCandidate(RequestDTO.CandidateDTO requestCandidateDTO){
         CandidateEntity candidate = new CandidateEntity();
         candidate.setStudentid(studentRepository.findByStudentid(requestCandidateDTO.getStudent_id()));
@@ -52,7 +65,6 @@ public class CandidateService {
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
         return responseCandidateDTO;
     }
-
     public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String student_id){
         VoteEntity vote = voteRepository.findByVoteid(vote_id);
         StudentEntity student = studentRepository.findByStudentid(student_id);
@@ -120,7 +132,6 @@ public class CandidateService {
                 .contentType(MediaType.parseMediaType(contentType)) // 이미지 타입에 따라 변경 (JPEG, PNG 등)
                 .body(imageBytes);
     }
-
     public String UpdateImage(MultipartFile file, String vote_id, String student_id) throws IOException {
         if (!file.isEmpty()) {
             try {

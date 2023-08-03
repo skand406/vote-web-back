@@ -31,7 +31,6 @@ public class UserController {
     public String UserModify(@PathVariable("user_id") String user_id){
         return "ok";
     }
-
     @DeleteMapping("/user/{user_id}")
     public String UserRemove(@PathVariable("user_id") String user_id){
         return "ok";
