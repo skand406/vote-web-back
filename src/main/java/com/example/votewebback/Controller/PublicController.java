@@ -14,7 +14,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/")
-public class PublicContorller {
+public class PublicController {
     private final UserService userService;
     private final VoteService voteService;
     private final CandidateService candidateService;
@@ -34,7 +34,7 @@ public class PublicContorller {
 
     //투표 관련
     @GetMapping("vote/{vote_bundle_id}") //투표 번들 id로 투표 리스트 찾기
-    public List<ResponseDTO.VoteDTO> VoteList_bundle(@PathVariable("vote_bundle_id") String vote_bundle_id){
+    public List<ResponseDTO.VoteDTO> VoteListByBundle(@PathVariable("vote_bundle_id") String vote_bundle_id){
         List<ResponseDTO.VoteDTO> voteDTOList = voteService.ReadVoteBundleList(vote_bundle_id);
         return voteDTOList;
     }
