@@ -2,6 +2,7 @@ package com.example.votewebback.Service;
 
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Entity.UserEntity;
 import com.example.votewebback.Entity.VoteEntity;
 import com.example.votewebback.RandomCode;
 import com.example.votewebback.Repository.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,17 +40,27 @@ public class VoteService {
         return responseVoteDTO;
     }
     public List<ResponseDTO.VoteDTO> ReadVoteList(){
-        List<VoteEntity> voteList=voteRepository.findAll();
+        List<VoteEntity> voteList = voteRepository.findAll();
         System.out.println("voteList = "+ voteList);
         List<ResponseDTO.VoteDTO> responseVoteList = new ArrayList<>();
 
         for(VoteEntity vote:voteList){
-            ResponseDTO.VoteDTO responseVote=new ResponseDTO.VoteDTO(vote);
+            ResponseDTO.VoteDTO responseVote = new ResponseDTO.VoteDTO(vote);
             responseVoteList.add(responseVote);
         }
         return responseVoteList;
     }
+    public List<ResponseDTO.VoteDTO> ReadVoteListByUserId(String user_id){
+        Optional<UserEntity> user = userRepository.findByUserid(user_id);
+        List<VoteEntity> voteList = voteRepository.findByUserid(user.get());
+        List<ResponseDTO.VoteDTO> responseVoteList = new ArrayList<>();
 
+        for(VoteEntity vote : voteList){
+            ResponseDTO.VoteDTO responseVote = new ResponseDTO.VoteDTO(vote);
+            responseVoteList.add(responseVote);
+        }
+        return responseVoteList;
+    }
     public List<ResponseDTO.VoteDTO> ReadVoteBundleList(String vote_bundle_id){
         List<VoteEntity> voteList = voteRepository.findByVotebundleid(vote_bundle_id);
         List<ResponseDTO.VoteDTO> responseVoteList = new ArrayList<>();

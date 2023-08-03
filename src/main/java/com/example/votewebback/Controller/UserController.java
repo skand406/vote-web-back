@@ -47,8 +47,9 @@ public class UserController {
         return responseVoteDTO;
     }
     @GetMapping("/vote/{user_id}") //유저 id로 투표 리스트 찾기
-    public String VoteList_user(@PathVariable("user_id") String user_id){
-        return "ok";
+    public List<ResponseDTO.VoteDTO> VoteListByUser(@PathVariable("user_id") String user_id){
+        List<ResponseDTO.VoteDTO> responseVoteList = voteService.ReadVoteListByUserId(user_id);
+        return responseVoteList;
     }
     @PutMapping("/vote/{vote_id}")
     public String VoteModify(@PathVariable("vote_id") String vote_id){
