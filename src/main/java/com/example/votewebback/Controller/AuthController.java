@@ -65,7 +65,7 @@ public class AuthController {
     @PostMapping("/email")
     public ResponseEntity<String> AuthEmail(@RequestBody Map<String,String> code){
         String authCode=code.get("code");
-        if(redisService.getData(authCode).isEmpty()) return ResponseEntity.ok("인증에 실패했습니다.");
+        if(redisService.getData(authCode)==null) return ResponseEntity.ok("인증에 실패했습니다.");
 
         else return ResponseEntity.ok("인증에 성공했습니다.");
     }
