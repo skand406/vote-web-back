@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/public")
 public class PublicController {
     private final UserService userService;
     private final VoteService voteService;
