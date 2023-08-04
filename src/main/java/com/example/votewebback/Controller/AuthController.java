@@ -38,8 +38,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ResponseDTO.UserDTO> signup(@RequestBody RequestDTO.UserDTO requestUserDTO, @RequestBody RequestDTO.LoginDTO requestLoginDTO){
-        ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userService.CreateUser(requestUserDTO,requestLoginDTO));
+    public ResponseEntity<ResponseDTO.UserDTO> signup(@RequestBody RequestDTO.UserDTO requestUserDTO){
+        ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userService.CreateUser(requestUserDTO));
         return ResponseEntity.ok(responseUserDTO);
     }
 

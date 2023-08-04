@@ -23,13 +23,13 @@ public class UserService {
     private final EmailService emailService;
     private final RedisService redisService;
 
-    public UserEntity CreateUser(RequestDTO.UserDTO userDTO, RequestDTO.LoginDTO requestLoginDTO){
+    public UserEntity CreateUser(RequestDTO.UserDTO userDTO){
        UserEntity user = UserEntity.builder()
                 .useremail(userDTO.getUser_email())
-                .userid(requestLoginDTO.user_id())
+                .userid(userDTO.getUser_id())
                 .username(userDTO.getUser_name())
                 .usertel(userDTO.getUser_tel())
-                .userpassword(passwordEncoder.encode(requestLoginDTO.user_password()))
+                .userpassword(passwordEncoder.encode(userDTO.getUser_password()))
                 .build();
        userRepository.save(user);
         return user;
