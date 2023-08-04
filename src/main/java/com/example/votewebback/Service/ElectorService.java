@@ -55,8 +55,9 @@ public class ElectorService {
         if(!elector.isEmpty()){
             if(email.equals(student.getStudentemail())){
                 String code = RandomCode.randomCode();
+                System.out.println(code); //나중에 수정 이메일 들어가기 싫어서 작성함
                 redisService.setDataExpire(code, email, 60 * 5L);
-                return emailService.sendMail(email,code);
+                return emailService.sendMail(email,code,"elector");
             }
             else return "이메일이 일치하지 않습니다.";
         }

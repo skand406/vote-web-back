@@ -76,7 +76,7 @@ public class UserService {
         if(user.getUseremail().equals(user_email)){
             String temPW=RandomCode.randomCode();
             user.setUserpassword(passwordEncoder.encode(temPW));
-            emailService.sendMail(user_email,temPW);
+            emailService.sendMail(user_email,temPW,"pw");
             return "임시 비밀번호가 발급되었습니다.";
         }
         else return "이메일이 맞지 않습니다.";
@@ -86,7 +86,7 @@ public class UserService {
         if(userRepository.findByUseremail(user_email).isEmpty()) {
             String code = RandomCode.randomCode();
             redisService.setDataExpire(code, user_email, 60 * 5L);
-            emailService.sendMail(user_email, code);
+            emailService.sendMail(user_email, code,"email");
             return "인증 번호가 전송되었습니다.";
         }
         else {
