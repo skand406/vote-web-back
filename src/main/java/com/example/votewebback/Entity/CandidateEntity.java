@@ -10,10 +10,9 @@ import lombok.Setter;
 @Table(name="Candidate")
 public class CandidateEntity {
     @Id
-    @ManyToOne
-    @MapsId("student_id")
-    @JoinColumn(name="student_id")
-    private StudentEntity studentid;
+    @MapsId("candidate_id")
+    private String candidateid;
+
     @Id
     @ManyToOne
     @MapsId("vote_id")
