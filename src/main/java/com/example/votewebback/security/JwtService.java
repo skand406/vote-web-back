@@ -25,7 +25,13 @@ public class JwtService {
     private static final String SECRET_KEY ="c1fcb3e0f88c6a3f05d9a023e00e4f46209f0c8ee975395744e00e1a7e960b5f";
 
     public String generateToken(UserDetails userDetails){
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        List<String> roles = authorities.stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .collect(Collectors.toList());
+
         Map<String, Object> extraCliams = new HashMap<>();
+        extraCliams.put("roles", roles); // 권한 정보를 토큰의 claims에 추가
 
         return Jwts.builder()
                 .setClaims(extraCliams)
@@ -63,7 +69,7 @@ public class JwtService {
         return claimsresolver.apply(claims);
     }
 
-    private Jws<Claims> extractAllClaims(String token){
+    Jws<Claims> extractAllClaims(String token){
         return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
     }
     //시크릿키 할당
@@ -75,7 +81,12 @@ public class JwtService {
     public Authentication getAuthentication(String token) {
         Claims claims = extractAllClaims(token).getBody();
 
-        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        List<String> roles = (List<String>) claims.get("roles");
+
+        // 권한 정보를 SimpleGrantedAuthority 객체로 변환하여 Set에 담기
+        Set<SimpleGrantedAuthority> authorities = roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
         User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal,token,authorities);
