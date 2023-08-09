@@ -46,6 +46,14 @@ public class PublicController {
         return "ok";
     }
 
+    @PutMapping("/vote/{vote_id}")
+    public ResponseEntity<String> Vote(@PathVariable("vote_id") String vote_id,@RequestBody Map<String,String> id) throws CustomException {
+        String candidate_id = id.get("candidate_id");
+        String student_id = id.get("student_id");
+        System.out.println(candidate_id);
+        voteService.SumitVote(candidate_id,student_id,vote_id);
+        return ResponseEntity.ok().build();
+    }
 
     //후보 관련
     @GetMapping("candidate/img/{vote_id}/{student_id}")
