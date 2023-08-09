@@ -54,15 +54,14 @@ public class ResponseDTO {
 
     @Getter
     public static class CandidateDTO {
-        private String student_id;
+        private String candidate_id;
         private String vote_id;
         private String candidate_spec;
         private String candidate_promise;
         private String img_path;
 
         public CandidateDTO(CandidateEntity candidate) {
-            StudentEntity student = candidate.getStudentid();
-            this.student_id = student.getStudentid();
+            this.candidate_id = candidate.getCandidateid();
             VoteEntity vote = candidate.getVoteid();
             this.vote_id = vote.getVoteid();
             this.candidate_spec = candidate.getCandidatespec();

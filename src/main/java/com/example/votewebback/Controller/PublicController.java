@@ -51,8 +51,8 @@ public class PublicController {
 
     }
     @GetMapping("candidate/{vote_id}/{student_id}")
-    public ResponseDTO.CandidateDTO CandidateInfo(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
-        return candidateService.SearchCandidate(vote_id, student_id);
+    public ResponseDTO.CandidateDTO CandidateInfo(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id){
+        return candidateService.SearchCandidate(vote_id, candidate_id);
     }
     @GetMapping("candidate/{vote_id}")
     public List<ResponseDTO.CandidateDTO> CandidateList(@PathVariable("vote_id") String vote_id){

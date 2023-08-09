@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/members")
@@ -61,10 +63,14 @@ public class MemberController {
 
     //후보 관련
     @PostMapping("/candidate/register")
-    public ResponseDTO.CandidateDTO CandidateAdd(@RequestBody RequestDTO.CandidateDTO requestCandidateDTO){
+    public ResponseEntity<Map<String,Object>> CandidateAdd(@RequestBody RequestDTO.CandidateDTO requestCandidateDTO){
         ResponseDTO.CandidateDTO responseCandidateDTO = candidateService.CreateCandidate(requestCandidateDTO);
+        ResponseDTO.StudentDTO responseStudentDTO =candidateService.IsPeopleVote(requestCandidateDTO);
 
-        return responseCandidateDTO;
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("candidate",responseCandidateDTO);
+        responseMap.put("student",responseStudentDTO);
+        return ResponseEntity.ok(responseMap);
     }
     @PostMapping("/candidate/img/upload")
     public ResponseEntity<String> CandidateSaveImg(@RequestParam String vote_id, @RequestParam String student_id,

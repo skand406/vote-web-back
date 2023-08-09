@@ -1,21 +1,24 @@
 package com.example.votewebback.Entity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @Entity
-@IdClass(VoteStudentIdKey.class)
+@AllArgsConstructor
+@NoArgsConstructor
+@IdClass(VoteCandidateIdKey.class)
 @Table(name="Candidate")
 public class CandidateEntity {
+
+
     @Id
-    @MapsId("candidate_id")
+    @Column(name = "candidate_id")
     private String candidateid;
 
     @Id
     @ManyToOne
-    @MapsId("vote_id")
     @JoinColumn(name = "vote_id")
     private VoteEntity voteid;
 
@@ -28,4 +31,6 @@ public class CandidateEntity {
     private int candidatecounter;
     @Column(name = "img_path")
     private String imgpath;
+
+
 }

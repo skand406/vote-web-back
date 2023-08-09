@@ -26,10 +26,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.votewebback.Entity.VoteType.PEOPLE;
+
 @Service
 @RequiredArgsConstructor
 public class CandidateService {
 
+    @Autowired
     private final CandidateRepository candidateRepository;
     private final VoteRepository voteRepository;
     private final StudentRepository studentRepository;
@@ -51,24 +54,28 @@ public class CandidateService {
 
         return responseCandidateList;
     }
-    public ResponseDTO.CandidateDTO CreateCandidate(RequestDTO.CandidateDTO requestCandidateDTO){
-        CandidateEntity candidate = new CandidateEntity();
-        candidate.setStudentid(studentRepository.findByStudentid(requestCandidateDTO.getStudent_id()));
-        candidate.setVoteid(voteRepository.findByVoteid(requestCandidateDTO.getVote_id()));
-        candidate.setCandidatespec(requestCandidateDTO.getCandidate_spec());
-        candidate.setCandidatepromise(requestCandidateDTO.getCandidate_promise());
-        candidate.setCandidatecounter(0); // 득표수 0
-        String imgPath = (requestCandidateDTO.getVote_id()) + "-" + (requestCandidateDTO.getStudent_id())+ ".png";
-        candidate.setImgpath(imgPath); // img 이름
-        this.candidateRepository.save(candidate);
-
+    public ResponseDTO.CandidateDTO  CreateCandidate(RequestDTO.CandidateDTO requestCandidateDTO){
+        String imgPath = (requestCandidateDTO.getVote_id()) + "-" + (requestCandidateDTO.getCandidate_id());
+        VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id());
+        if (vote == null) {
+            throw new IllegalArgumentException("Invalid vote_id: " + requestCandidateDTO.getVote_id());
+            // 또는 원하는 예외 타입을 사용하여 처리할 수 있습니다.
+        }
+        CandidateEntity candidate = CandidateEntity.builder()
+                .candidateid(requestCandidateDTO.getCandidate_id())
+                .voteid(vote)
+                .candidatespec(requestCandidateDTO.getCandidate_spec())
+                .candidatepromise(requestCandidateDTO.getCandidate_promise())
+                .candidatecounter(0) // 득표수 0
+                .imgpath(imgPath) // img 이름g
+                .build();
+        candidateRepository.save(candidate);
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
         return responseCandidateDTO;
     }
-    public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String student_id){
+    public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String candidate_id){
         VoteEntity vote = voteRepository.findByVoteid(vote_id);
-        StudentEntity student = studentRepository.findByStudentid(student_id);
-        CandidateEntity candidate = candidateRepository.findByVoteidAndStudentid(vote, student);
+        CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote, candidate_id);
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
         return responseCandidateDTO;
     }
@@ -170,6 +177,16 @@ public class CandidateService {
             }
         }
         return "이미지 없음";
+    }
+
+    public ResponseDTO.StudentDTO IsPeopleVote(RequestDTO.CandidateDTO requestCandidateDTO) {
+        VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id());
+
+        if (vote.getVotetype() == PEOPLE) {
+            StudentEntity student = studentRepository.findByStudentid(requestCandidateDTO.getCandidate_id());
+            return new ResponseDTO.StudentDTO(student);
+        }
+        else return null;
     }
 }
 

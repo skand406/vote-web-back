@@ -34,19 +34,19 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserRepository userRepository;
-
+/*
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final AccessDeniedHandler accessDeniedHandler;
+    private final AccessDeniedHandler accessDeniedHandler;*/
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf->csrf.disable())
-            .exceptionHandling(excption-> excption
+           /* .exceptionHandling(excption-> excption
                     .authenticationEntryPoint(authenticationEntryPoint)
-                    .accessDeniedHandler(accessDeniedHandler))
+                    .accessDeniedHandler(accessDeniedHandler))*/
             .authorizeHttpRequests(authorize->authorize
-                    .requestMatchers("/**","/auth/**","/swagger-ui/**").permitAll()
-                    .requestMatchers("/votes/**").hasRole("USER")
+                    .requestMatchers("/members/**","/public/**","/auth/**","/swagger-ui/**").permitAll()
+                    //.requestMatchers("/users/**").hasRole("USER")
                     .anyRequest().authenticated() //그 외 인증 없이 접근x
             )
             .sessionManagement(session -> session

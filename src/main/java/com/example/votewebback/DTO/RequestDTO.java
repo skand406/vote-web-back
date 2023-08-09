@@ -37,7 +37,7 @@ public class RequestDTO {
     }
     @Getter
     public static class CandidateDTO {
-        private String student_id;
+        private String candidate_id;
         private String vote_id;
         private String candidate_spec;
         private String candidate_promise;
