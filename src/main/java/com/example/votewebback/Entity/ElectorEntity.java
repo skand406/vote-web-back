@@ -1,12 +1,14 @@
 package com.example.votewebback.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @IdClass(VoteStudentIdKey.class)
 @Table(name="Elector")
 public class ElectorEntity {

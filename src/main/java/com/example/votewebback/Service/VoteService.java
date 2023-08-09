@@ -1,12 +1,12 @@
 package com.example.votewebback.Service;
 
+import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
-import com.example.votewebback.Entity.UserEntity;
-import com.example.votewebback.Entity.VoteEntity;
+import com.example.votewebback.Entity.*;
 import com.example.votewebback.RandomCode;
-import com.example.votewebback.Repository.UserRepository;
-import com.example.votewebback.Repository.VoteRepository;
+import com.example.votewebback.Repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,25 +19,35 @@ import java.util.Optional;
 public class VoteService {
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
+    private final CandidateRepository candidateRepository;
+    private final ElectorRepository electorRepository;
+    private final StudentRepository studentRepository;
 
 
 
-    public ResponseDTO.VoteDTO CreateVote(RequestDTO.VoteDTO requestVoteDTO){
-        VoteEntity vote = new VoteEntity();
-        vote.setEnddate(requestVoteDTO.getEnd_date());
-        vote.setStartdate(requestVoteDTO.getStart_date());
-        vote.setLastenddate(requestVoteDTO.getEnd_date().plusDays(30));
-        vote.setVoteid("vote_"+RandomCode.randomCode());
-        vote.setVotebundleid(requestVoteDTO.getVote_bundle_id());
-        vote.setMajor(requestVoteDTO.getMajor());
-        vote.setGrade(requestVoteDTO.getGrade());
-        vote.setVotename(requestVoteDTO.getVote_name());
-        vote.setVotetype(requestVoteDTO.getVote_type());
-        vote.setUserid(userRepository.findByUserid(requestVoteDTO.getUser_id()).get());
-        this.voteRepository.save(vote);
-
-        ResponseDTO.VoteDTO responseVoteDTO = new ResponseDTO.VoteDTO(vote);
-        return responseVoteDTO;
+    public ResponseDTO.VoteDTO CreateVote(RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
+        UserEntity user = userRepository.findByUserid(requestVoteDTO.getUser_id()).get();
+        if (user == null) {
+            throw new CustomException("사용할 수 없는 유저 id" + requestVoteDTO.getUser_id());
+            // 또는 원하는 예외 타입을 사용하여 처리할 수 있습니다.
+        }
+        else {
+            VoteEntity vote = VoteEntity.builder()
+                    .enddate(requestVoteDTO.getEnd_date())
+                    .startdate(requestVoteDTO.getStart_date())
+                    .lastenddate(requestVoteDTO.getEnd_date().plusDays(30))
+                    .voteid("vote_" + RandomCode.randomCode())
+                    .votebundleid(requestVoteDTO.getVote_bundle_id())
+                    .major(requestVoteDTO.getMajor())
+                    .grade(requestVoteDTO.getGrade())
+                    .votename(requestVoteDTO.getVote_name())
+                    .votetype(requestVoteDTO.getVote_type())
+                    .userid(user)
+                    .build();
+            voteRepository.save(vote);
+            ResponseDTO.VoteDTO responseVoteDTO = new ResponseDTO.VoteDTO(vote);
+            return responseVoteDTO;
+        }
     }
     public List<ResponseDTO.VoteDTO> ReadVoteList(){
         List<VoteEntity> voteList = voteRepository.findAll();

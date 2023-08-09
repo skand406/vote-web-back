@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 
+import com.example.votewebback.CustomException;
 import org.apache.commons.io.IOUtils;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
@@ -54,11 +55,11 @@ public class CandidateService {
 
         return responseCandidateList;
     }
-    public ResponseDTO.CandidateDTO  CreateCandidate(RequestDTO.CandidateDTO requestCandidateDTO){
+    public ResponseDTO.CandidateDTO  CreateCandidate(RequestDTO.CandidateDTO requestCandidateDTO) throws CustomException {
         String imgPath = (requestCandidateDTO.getVote_id()) + "-" + (requestCandidateDTO.getCandidate_id());
         VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id());
         if (vote == null) {
-            throw new IllegalArgumentException("Invalid vote_id: " + requestCandidateDTO.getVote_id());
+            throw new CustomException("사용할 수 없는 투표 id " + requestCandidateDTO.getVote_id());
             // 또는 원하는 예외 타입을 사용하여 처리할 수 있습니다.
         }
         else {
@@ -78,7 +79,7 @@ public class CandidateService {
     }
     public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String candidate_id){
         VoteEntity vote = voteRepository.findByVoteid(vote_id);
-        CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote, candidate_id);
+        CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote, candidate_id).get();
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
         return responseCandidateDTO;
     }

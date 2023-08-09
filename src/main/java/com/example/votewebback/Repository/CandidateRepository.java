@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface CandidateRepository extends JpaRepository<CandidateEntity, VoteCandidateIdKey> {
-   CandidateEntity findByVoteidAndCandidateid(VoteEntity vote_id, String candidate_id);
+   Optional<CandidateEntity> findByVoteidAndCandidateid(VoteEntity vote_id, String candidate_id);
    List<CandidateEntity> findByVoteid(VoteEntity vote_id);
 }

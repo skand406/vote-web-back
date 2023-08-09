@@ -1,9 +1,11 @@
 package com.example.votewebback.Controller;
 
+import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +43,7 @@ public class MemberController {
 
     //투표 관련
     @PostMapping("/vote/register")
-    public ResponseDTO.VoteDTO VoteAdd(@RequestBody RequestDTO.VoteDTO requestVoteDTO){
+    public ResponseDTO.VoteDTO VoteAdd(@RequestBody RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
         ResponseDTO.VoteDTO responseVoteDTO = voteService.CreateVote(requestVoteDTO);
         //request에 vote_id 없어서 response 활용
         electorService.CreateElector(requestVoteDTO.getMajor(), requestVoteDTO.getGrade(), responseVoteDTO.getVote_id());
@@ -63,7 +65,7 @@ public class MemberController {
 
     //후보 관련
     @PostMapping("/candidate/register")
-    public ResponseEntity<Map<String,Object>> CandidateAdd(@RequestBody RequestDTO.CandidateDTO requestCandidateDTO){
+    public ResponseEntity<Map<String,Object>> CandidateAdd(@RequestBody RequestDTO.CandidateDTO requestCandidateDTO) throws CustomException {
         ResponseDTO.CandidateDTO responseCandidateDTO = candidateService.CreateCandidate(requestCandidateDTO);
         ResponseDTO.StudentDTO responseStudentDTO =candidateService.IsPeopleVote(requestCandidateDTO);
 

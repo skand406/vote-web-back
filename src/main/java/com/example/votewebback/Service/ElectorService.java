@@ -42,9 +42,11 @@ public class ElectorService {
                 studentList = studentRepository.findByStudentgradeAndStudentmajor(grade, major);
 
             for (StudentEntity student : studentList) {
-                ElectorEntity elector = new ElectorEntity();
-                elector.setStudentid(studentRepository.findByStudentid(student.getStudentid()));
-                elector.setVoteid(voteRepository.findByVoteid(vote_id));
+                ElectorEntity elector = ElectorEntity.builder()
+                        .studentid(studentRepository.findByStudentid(student.getStudentid()))
+                        .voteid(voteRepository.findByVoteid(vote_id))
+                        .voteconfirm(false)
+                        .build();
                 electorRepository.save(elector);
             }
     }

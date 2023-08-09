@@ -1,12 +1,14 @@
 package com.example.votewebback.Entity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="Vote")
 public class VoteEntity {
