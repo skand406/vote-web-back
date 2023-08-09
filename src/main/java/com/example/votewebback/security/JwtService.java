@@ -3,6 +3,7 @@ package com.example.votewebback.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +23,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY ="c1fcb3e0f88c6a3f05d9a023e00e4f46209f0c8ee975395744e00e1a7e960b5f";
+    @Value("${jwt.secretKey}")
+    private String SECRET_KEY ;
 
     public String generateToken(UserDetails userDetails){
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();

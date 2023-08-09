@@ -49,6 +49,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    //어노테이션 오류
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
 }
 
