@@ -61,17 +61,20 @@ public class CandidateService {
             throw new IllegalArgumentException("Invalid vote_id: " + requestCandidateDTO.getVote_id());
             // 또는 원하는 예외 타입을 사용하여 처리할 수 있습니다.
         }
-        CandidateEntity candidate = CandidateEntity.builder()
-                .candidateid(requestCandidateDTO.getCandidate_id())
-                .voteid(vote)
-                .candidatespec(requestCandidateDTO.getCandidate_spec())
-                .candidatepromise(requestCandidateDTO.getCandidate_promise())
-                .candidatecounter(0) // 득표수 0
-                .imgpath(imgPath) // img 이름g
-                .build();
-        candidateRepository.save(candidate);
-        ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
-        return responseCandidateDTO;
+        else {
+            CandidateEntity candidate = CandidateEntity.builder()
+                    .candidateid(requestCandidateDTO.getCandidate_id())
+                    .voteid(vote)
+                    .candidatespec(requestCandidateDTO.getCandidate_spec())
+                    .candidatepromise(requestCandidateDTO.getCandidate_promise())
+                    .candidatecounter(0) // 득표수 0
+                    .imgpath(imgPath) // img 이름g
+                    .build();
+
+            candidateRepository.save(candidate);
+            ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
+            return responseCandidateDTO;
+        }
     }
     public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String candidate_id){
         VoteEntity vote = voteRepository.findByVoteid(vote_id);
