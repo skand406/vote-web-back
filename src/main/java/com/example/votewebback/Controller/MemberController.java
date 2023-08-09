@@ -2,7 +2,6 @@ package com.example.votewebback.Controller;
 
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
-import com.example.votewebback.Entity.UserEntity;
 import com.example.votewebback.Service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +12,9 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/members")
 @RequiredArgsConstructor
-public class UserController {
+public class MemberController {
     private final UserService userService;
     private final VoteService voteService;
     private final ElectorService electorService;

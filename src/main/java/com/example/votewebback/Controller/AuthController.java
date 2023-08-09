@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/auths")
 public class AuthController {
     private final UserService userService;
     private final AuthService authService;
