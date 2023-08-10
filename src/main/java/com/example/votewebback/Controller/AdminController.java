@@ -18,7 +18,7 @@ public class AdminController {
 
     @GetMapping("/user")
     public List<ResponseDTO.UserDTO> UserList(){
-        List<ResponseDTO.UserDTO> userDTOList = userService.SearchUserAll();
+        List<ResponseDTO.UserDTO> userDTOList = userService.ReadUserAll();
         return userDTOList;
     }
 

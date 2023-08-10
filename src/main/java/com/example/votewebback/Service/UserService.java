@@ -24,17 +24,17 @@ public class UserService {
     private final RedisService redisService;
 
     public UserEntity CreateUser(RequestDTO.UserDTO userDTO){
-       UserEntity user = UserEntity.builder()
+        UserEntity user = UserEntity.builder()
                 .useremail(userDTO.getUser_email())
                 .userid(userDTO.getUser_id())
                 .username(userDTO.getUser_name())
                 .usertel(userDTO.getUser_tel())
                 .userpassword(passwordEncoder.encode(userDTO.getUser_password()))
                 .build();
-       userRepository.save(user);
+        userRepository.save(user);
         return user;
     }
-    public List<ResponseDTO.UserDTO> SearchUserAll(){
+    public List<ResponseDTO.UserDTO> ReadUserAll(){
         List<UserEntity> userList = userRepository.findAll();
         List<ResponseDTO.UserDTO> responseUserList = new ArrayList<>();
 
@@ -44,13 +44,12 @@ public class UserService {
         }
         return responseUserList;
     }
-    public ResponseDTO.UserDTO SearchUserById(String user_id){
+    public ResponseDTO.UserDTO ReadUserById(String user_id){
+            Optional<UserEntity> userOptional = userRepository.findByUserid(user_id);
+            ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userOptional.get());
+            return responseUserDTO;
+        }
 
-        Optional<UserEntity> userOptional = userRepository.findByUserid(user_id);
-        ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userOptional.get());
-
-        return responseUserDTO;
-    }
     public String SearchUserid(RequestDTO.UserDTO RequestUserDTO) {
         Optional<UserEntity> user = userRepository.findByUseremail(RequestUserDTO.getUser_email());
         if (user.isEmpty()) {
