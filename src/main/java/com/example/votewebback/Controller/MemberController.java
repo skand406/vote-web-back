@@ -28,7 +28,7 @@ public class MemberController {
     //유저 관련
     @GetMapping("/user/{user_id}")
     public ResponseDTO.UserDTO UserInfo(@PathVariable("user_id") String user_id){
-        ResponseDTO.UserDTO userDTOList = userService.SearchUserById(user_id);
+        ResponseDTO.UserDTO userDTOList = userService.ReadUserById(user_id);
         return userDTOList;
     }
     @PutMapping("/user/{user_id}")

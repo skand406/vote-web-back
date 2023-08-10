@@ -4,17 +4,13 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.ObjectError;
 
 import java.security.Key;
 import java.util.*;
@@ -26,7 +22,7 @@ public class JwtService {
     @Value("${jwt.secretKey}")
     private String SECRET_KEY ;
 
-    public String generateToken(UserDetails userDetails){
+    public String generateAccessToken(UserDetails userDetails){
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         List<String> roles = authorities.stream()
                                 .map(GrantedAuthority::getAuthority)
@@ -42,6 +38,14 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) //만료시간
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact(); //서명
+    }
+    public String generateRefreshToken(UserDetails userDetails){
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
     public boolean isTokenValid(String token,UserDetails userDetails){
         try {

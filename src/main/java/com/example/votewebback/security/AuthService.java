@@ -21,8 +21,9 @@ public class AuthService {
                 //내부적으로 암호화된 비번 확인 따라서 비번 인코딩 안해도 됨.
         );
         //정상 로직 및 에러 로직 넣어야 함
-        String token = jwtService.generateToken(user);
-        System.out.println(token);
-        return new ResponseDTO.LoginDTO(token);
+        String accesstoken = jwtService.generateAccessToken(user);
+        String refreshtoken = jwtService.generateRefreshToken(user);
+
+        return new ResponseDTO.LoginDTO(accesstoken, refreshtoken);
     }
 }
