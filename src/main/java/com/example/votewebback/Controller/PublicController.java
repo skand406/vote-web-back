@@ -24,7 +24,7 @@ public class PublicController {
 
     //유저 관련
     @PostMapping("/user/id")
-    public ResponseEntity<String> UserID(@RequestBody RequestDTO.UserDTO requestUserDTO){
+    public ResponseEntity<String> UserID(@RequestBody RequestDTO.UserDTO requestUserDTO) throws CustomException {
         return ResponseEntity.ok(userService.SearchUserid(requestUserDTO));
     }
     @PutMapping("/user/pw")
@@ -37,7 +37,7 @@ public class PublicController {
 
     //투표 관련
     @GetMapping("/vote/{vote_bundle_id}") //투표 번들 id로 투표 리스트 찾기
-    public List<ResponseDTO.VoteDTO> VoteListByBundle(@PathVariable("vote_bundle_id") String vote_bundle_id){
+    public List<ResponseDTO.VoteDTO> VoteListByBundle(@PathVariable("vote_bundle_id") String vote_bundle_id) throws CustomException {
         List<ResponseDTO.VoteDTO> voteDTOList = voteService.ReadVoteBundleList(vote_bundle_id);
         return voteDTOList;
     }

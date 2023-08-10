@@ -25,7 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.votewebback.Entity.VoteType.PEOPLE;
 
@@ -59,7 +61,9 @@ public class CandidateService {
         String imgPath = (requestCandidateDTO.getVote_id()) + "-" + (requestCandidateDTO.getCandidate_id());
         VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id());
         if (vote == null) {
-            throw new CustomException("사용할 수 없는 투표 id " + requestCandidateDTO.getVote_id());
+            Map<Integer,String> error = new HashMap<>();
+            error.put(700,"사용할 수 없는 투표 id : " + requestCandidateDTO.getVote_id());
+            throw new CustomException(error);
             // 또는 원하는 예외 타입을 사용하여 처리할 수 있습니다.
         }
         else {
@@ -83,7 +87,7 @@ public class CandidateService {
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
         return responseCandidateDTO;
     }
-    public String CreateImage(MultipartFile file, String vote_id, String student_id) throws IOException {
+    public Void CreateImage(MultipartFile file, String vote_id, String student_id) throws IOException, CustomException {
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
@@ -98,7 +102,9 @@ public class CandidateService {
 
                 if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
                     if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
-                        return "올바른 이미지 확장자가 아닙니다. (png, jpg 파일만 업로드 가능)";
+                        Map<Integer,String> error = new HashMap<>();
+                        error.put(611,"확장자 오류");
+                        throw new CustomException(error);
                     }
 
                     String fileName= "img/" + vote_id + "-" + student_id;
@@ -108,17 +114,24 @@ public class CandidateService {
                     metadata.setContentLength(file.getSize());
                     amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
 
-                    return "이미지 등록 성공 (크기: "+ width +", "+ height +")\n"
-                            + fileUrl;
                 } else {
-                    return "이미지가 올바르지 않습니다. (원하는 크기: 3.5:4.0)";
+                    Map<Integer,String> error = new HashMap<>();
+                    error.put(612,"크기 오류 현재 크기 : "+image.getHeight() +"/"+ image.getWidth());
+                    throw new CustomException(error);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                return "이미지 등록 실패";
+                Map<Integer,String> error = new HashMap<>();
+                error.put(614,"이미지 서버 에러");
+                throw new CustomException(error);
+            } catch (CustomException e) {
+                Map<Integer, String> error = e.getError();
+                throw new CustomException(error);
             }
         }
-        return "이미지 없음";
+        Map<Integer, String> error = new HashMap<>();
+        error.put(613,"이미지 없음");
+        throw new CustomException(error);
     }
     public ResponseEntity<byte[]> ReadImage(String student_id,String vote_id){
         String img = "img/"+vote_id+"-"+student_id;

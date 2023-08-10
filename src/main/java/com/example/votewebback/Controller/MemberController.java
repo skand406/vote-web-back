@@ -42,7 +42,9 @@ public class MemberController {
         } else{
             System.out.println(userDTOList.getUser_id());
             System.out.println(authentication.getName());
-            throw new CustomException("로그인한 아이디와 다른 경로입니다.");
+            Map<Integer,String> error = new HashMap<>();
+            error.put(700,"사용할 수 없는 유저 id : " + user_id);
+            throw new CustomException(error);
         }
     }
     @PutMapping("/user/{user_id}")
@@ -89,9 +91,9 @@ public class MemberController {
     }
     @PostMapping("/candidate/img/upload")
     public ResponseEntity<String> CandidateSaveImg(@RequestParam String vote_id, @RequestParam String student_id,
-                                                   @RequestParam("image") MultipartFile file) throws IOException {
-        String status = candidateService.CreateImage(file,vote_id,student_id);
-        return ResponseEntity.ok(status);
+                                                   @RequestParam("image") MultipartFile file) throws IOException, CustomException {
+        candidateService.CreateImage(file,vote_id,student_id);
+        return ResponseEntity.ok().build();
     }
     @PutMapping("/candidate/img/{vote_id}/{student_id}")
     public ResponseEntity<String> CandidateModifyImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id,

@@ -1,5 +1,6 @@
 package com.example.votewebback.Service;
 
+import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.*;
 import com.example.votewebback.Entity.*;
 import com.example.votewebback.RandomCode;
@@ -9,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -50,23 +49,30 @@ public class UserService {
             return responseUserDTO;
         }
 
-    public String SearchUserid(RequestDTO.UserDTO RequestUserDTO) {
+    public String SearchUserid(RequestDTO.UserDTO RequestUserDTO) throws CustomException {
         Optional<UserEntity> user = userRepository.findByUseremail(RequestUserDTO.getUser_email());
         if (user.isEmpty()) {
-            return "가입한적 없는 이메일입니다.";
+            Map<Integer,String> error = new HashMap<>();
+            error.put(632,"가입하지 않은 사용자");
+            throw new CustomException(error);
         } else {
             String user_id = user.get().getUserid();
             if (user.get().getUserName().equals(RequestUserDTO.getUser_name())
                     && user.get().getUsertel().equals(RequestUserDTO.getUser_tel()))
                 return user_id;
-            else
-                return "입력한 이메일이 저장된 이름과 전화번호가 일치하지 않습니다.";
+            else {
+                Map<Integer, String> error = new HashMap<>();
+                error.put(631, "이름과 번호가 일치하지 않음"+RequestUserDTO.getUser_name() +"/"+RequestUserDTO.getUser_tel());
+                throw new CustomException(error);
+            }
         }
     }
-    public String CheckUserID(String user_id){
-        if(userRepository.findByUserid(user_id).isEmpty())
-            return "사용가능한 id입니다.";
-        return "중복된 id입니다.";
+    public void CheckUserID(String user_id) throws CustomException {
+        if(!userRepository.findByUserid(user_id).isEmpty()) {
+            Map<Integer, String> error = new HashMap<>();
+            error.put(621, "중복된 id");
+            throw new CustomException(error);
+        }
     }
 
     @Transactional
@@ -81,15 +87,14 @@ public class UserService {
         else return "이메일이 맞지 않습니다.";
     }
 
-    public String CheckUserEmail(String user_email) {
-        if(userRepository.findByUseremail(user_email).isEmpty()) {
-            String code = RandomCode.randomCode();
-            redisService.setDataExpire(code, user_email, 60 * 5L);
-            emailService.sendMail(user_email, code,"email");
-            return "인증 번호가 전송되었습니다.";
+    public void CheckUserEmail(String user_email) throws CustomException {
+        if(!userRepository.findByUseremail(user_email).isEmpty()) {
+            Map<Integer,String> error = new HashMap<>();
+            error.put(650,"이미 가입된 이메일 " +user_email);
+            throw new CustomException(error);
         }
-        else {
-            return "이미 가입된 이메일입니다.";
-        }
+        String code = RandomCode.randomCode();
+        redisService.setDataExpire(code, user_email, 60 * 5L);
+        emailService.sendMail(user_email, code,"email");
     }
 }

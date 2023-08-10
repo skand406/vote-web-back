@@ -1,5 +1,6 @@
 package com.example.votewebback.Controller;
 
+import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Entity.StudentEntity;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -32,9 +34,10 @@ public class AuthController {
         return "ok";
     }
     @PostMapping("/id-checker")
-    public ResponseEntity<String> IdChecker(@RequestBody Map<String,String> id){
+    public ResponseEntity<String> IdChecker(@RequestBody Map<String,String> id) throws CustomException {
         String user_id=id.get("user_id");
-        return ResponseEntity.ok(userService.CheckUserID(user_id));
+        userService.CheckUserID(user_id);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/signup")
@@ -63,17 +66,20 @@ public class AuthController {
     }
 
     @PostMapping("/email")
-    public ResponseEntity<String> AuthEmail(@RequestBody Map<String,String> code){
+    public ResponseEntity<String> AuthEmail(@RequestBody Map<String,String> code) throws CustomException {
         String authCode=code.get("code");
-        if(redisService.getData(authCode)==null) return ResponseEntity.ok("인증에 실패했습니다.");
-
-        else return ResponseEntity.ok("인증에 성공했습니다.");
+        if(redisService.getData(authCode)==null) {
+            Map<Integer,String> error = new HashMap<>();
+            error.put(640,"인증 실패");
+            throw new CustomException(error);
+        }
+        return ResponseEntity.ok().build();
     }
     @PostMapping("/email-checker")
-    public ResponseEntity<String> EmailChecker(@RequestBody Map<String,String> email){
+    public ResponseEntity<String> EmailChecker(@RequestBody Map<String,String> email) throws CustomException {
         String user_email = email.get("user_email");
-        String status = userService.CheckUserEmail(user_email);
-        return ResponseEntity.ok(status);
+        userService.CheckUserEmail(user_email);
+        return ResponseEntity.ok().build();
     }
 
 
