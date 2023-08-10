@@ -4,11 +4,18 @@ import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Service.*;
+import com.example.votewebback.security.JwtService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,9 +34,16 @@ public class MemberController {
 
     //유저 관련
     @GetMapping("/user/{user_id}")
-    public ResponseDTO.UserDTO UserInfo(@PathVariable("user_id") String user_id){
+    public ResponseEntity<ResponseDTO.UserDTO> UserInfo(@PathVariable("user_id") String user_id) throws CustomException {
         ResponseDTO.UserDTO userDTOList = userService.ReadUserById(user_id);
-        return userDTOList;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (userDTOList.getUser_id().equals(authentication.getName())){
+            return ResponseEntity.ok(userDTOList);
+        } else{
+            System.out.println(userDTOList.getUser_id());
+            System.out.println(authentication.getName());
+            throw new CustomException("로그인한 아이디와 다른 경로입니다.");
+        }
     }
     @PutMapping("/user/{user_id}")
     public String UserModify(@PathVariable("user_id") String user_id){
@@ -39,7 +53,6 @@ public class MemberController {
     public String UserRemove(@PathVariable("user_id") String user_id){
         return "ok";
     }
-
 
     //투표 관련
     @PostMapping("/vote/register")
