@@ -53,57 +53,47 @@ public class UserService {
         }
 
     public String SearchUserid(RequestDTO.UserDTO RequestUserDTO) throws CustomException {
-        Optional<UserEntity> user = userRepository.findByUseremail(RequestUserDTO.getUser_email());
-        if (user.isEmpty()) {
-            Map<Integer,String> error = new HashMap<>();
-            error.put(632,"가입하지 않은 사용자");
-            throw new CustomException(error);
-        } else {
-            String user_id = user.get().getUserid();
-            if (user.get().getUserName().equals(RequestUserDTO.getUser_name())
-                    && user.get().getUsertel().equals(RequestUserDTO.getUser_tel()))
-                return user_id;
-            else {
-                Map<Integer, String> error = new HashMap<>();
-                error.put(631, "이름과 번호가 일치하지 않음"+RequestUserDTO.getUser_name() +"/"+RequestUserDTO.getUser_tel());
-                throw new CustomException(error);
-            }
+        UserEntity user = userRepository.findByUseremail(RequestUserDTO.getUser_email()).orElseThrow(()->
+                new CustomException(632,"가입하지 않은 사용자"));
+
+        String user_id = user.getUserid();
+        if (user.getUserName().equals(RequestUserDTO.getUser_name())
+                && user.getUsertel().equals(RequestUserDTO.getUser_tel()))
+            return user_id;
+        else {
+            throw new CustomException(631, "이름과 번호가 일치하지 않음"+RequestUserDTO.getUser_name() +"/"+RequestUserDTO.getUser_tel());
         }
     }
     public void CheckUserID(String user_id) throws CustomException {
         if(!userRepository.findByUserid(user_id).isEmpty()) {
-            Map<Integer, String> error = new HashMap<>();
-            error.put(621, "중복된 id");
-            throw new CustomException(error);
+            throw new CustomException(621, "중복된 id");
         }
     }
 
     @Transactional
-    public String UpdateUserPW(String user_id,String user_email){
-        UserEntity user=userRepository.findByUserid(user_id).get();
-        if(user.getUseremail().equals(user_email)){
-            String temPW=RandomCode.randomCode();
-            user.setUserpassword(passwordEncoder.encode(temPW));
-            emailService.sendMail(user_email,temPW,"pw");
-            return "임시 비밀번호가 발급되었습니다.";
+    public void UpdateUserPW(String user_id,String user_email) throws CustomException {
+        UserEntity user=userRepository.findByUserid(user_id).orElseThrow(()->
+                new CustomException(700,"없는 유저"+user_id));
+        if(!user.getUseremail().equals(user_email)){
+            throw new CustomException(680,"이메일이 맞지 않음");
         }
-        else return "이메일이 맞지 않습니다.";
+        String temPW=RandomCode.randomCode();
+        user.setUserpassword(passwordEncoder.encode(temPW));
+        emailService.sendMail(user_email,temPW,"pw");
     }
 
     public void CheckUserEmail(String user_email) throws CustomException {
         if(!userRepository.findByUseremail(user_email).isEmpty()) {
-            Map<Integer,String> error = new HashMap<>();
-            error.put(650,"이미 가입된 이메일 " +user_email);
-            throw new CustomException(error);
+            throw new CustomException(650,"이미 가입된 이메일 " +user_email);
         }
         String code = RandomCode.randomCode();
         redisService.setDataExpire(code, user_email, 60 * 5L);
         emailService.sendMail(user_email, code,"email");
     }
 
-    public void DeleteUser(String user_id) {
+    public void DeleteUser(String user_id) throws CustomException {
         UserEntity user = userRepository.findByUserid(user_id).orElseThrow(()->
-                new IllformedLocaleException("없는 회원"+user_id));
+                new CustomException(700,"없는 회원"+user_id));
         userRepository.delete(user);
         List<VoteEntity> voteList = voteRepository.findByUserid(user);
         for(VoteEntity v:voteList){

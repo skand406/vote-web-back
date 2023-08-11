@@ -25,16 +25,10 @@ public class VoteService {
 
 
     public ResponseDTO.VoteDTO CreateVote(RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
-        UserEntity user = userRepository.findByUserid(requestVoteDTO.getUser_id()).get();
-        if (user == null) {
-            Map<Integer,String> error = new HashMap<>();
-            error.put(700,"사용할 수 없는 유저 id : " + requestVoteDTO.getUser_id());
-            throw new CustomException(error);
-            // 또는 원하는 예외 타입을 사용하여 처리할 수 있습니다.
-        }else if(requestVoteDTO.getEnd_date().isBefore(requestVoteDTO.getStart_date())){
-            Map<Integer,String> error = new HashMap<>();
-            error.put(601,"날짜 오류 : " + requestVoteDTO.getStart_date()+"/"+requestVoteDTO.getEnd_date());
-            throw new CustomException(error);
+        UserEntity user = userRepository.findByUserid(requestVoteDTO.getUser_id()).orElseThrow(()->
+                new CustomException(700,"사용할 수 없는 유저 id : " + requestVoteDTO.getUser_id()));
+        if(requestVoteDTO.getEnd_date().isBefore(requestVoteDTO.getStart_date())){
+            throw new CustomException(601,"날짜 오류 : " + requestVoteDTO.getStart_date()+"/"+requestVoteDTO.getEnd_date());
         }
         else {
             VoteEntity vote = VoteEntity.builder()
@@ -79,9 +73,7 @@ public class VoteService {
     public List<ResponseDTO.VoteDTO> ReadVoteBundleList(String vote_bundle_id) throws CustomException {
         List<VoteEntity> voteList = voteRepository.findByVotebundleid(vote_bundle_id);
         if(voteList.isEmpty()){
-            Map<Integer,String> error = new HashMap<>();
-            error.put(661,"사용할 수 없는 번들 id : " + vote_bundle_id);
-            throw new CustomException(error);
+            throw new CustomException(700,"사용할 수 없는 번들 id : " + vote_bundle_id);
         }
         List<ResponseDTO.VoteDTO> responseVoteList = new ArrayList<>();
 
@@ -105,16 +97,14 @@ public class VoteService {
             elector.setVoteconfirm(true);
         }
         else {
-            Map<Integer,String> error = new HashMap<>();
-            error.put(670,"이미 투표한 유권자" );
-            throw new CustomException(error);
+            throw new CustomException(670,"이미 투표한 유권자");
         }
 
     }
 
-    public void DeleteVote(String vote_id) {
+    public void DeleteVote(String vote_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).orElseThrow(()->
-                new IllformedLocaleException("없는 투표"+vote_id));
+                new CustomException(700,"없는 투표"+vote_id));
         voteRepository.delete(vote);
         List<CandidateEntity> candidateList = candidateRepository.findByVoteid(vote);
         for(CandidateEntity c:candidateList){

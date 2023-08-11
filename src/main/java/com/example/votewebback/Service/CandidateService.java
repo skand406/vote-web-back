@@ -57,27 +57,22 @@ public class CandidateService {
     }
     public ResponseDTO.CandidateDTO  CreateCandidate(RequestDTO.CandidateDTO requestCandidateDTO) throws CustomException {
         String imgPath = (requestCandidateDTO.getVote_id()) + "-" + (requestCandidateDTO.getCandidate_id());
-        VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id()).get();
-        if (vote == null) {
-            Map<Integer,String> error = new HashMap<>();
-            error.put(700,"사용할 수 없는 투표 id : " + requestCandidateDTO.getVote_id());
-            throw new CustomException(error);
-            // 또는 원하는 예외 타입을 사용하여 처리할 수 있습니다.
-        }
-        else {
-            CandidateEntity candidate = CandidateEntity.builder()
-                    .candidateid(requestCandidateDTO.getCandidate_id())
-                    .voteid(vote)
-                    .candidatespec(requestCandidateDTO.getCandidate_spec())
-                    .candidatepromise(requestCandidateDTO.getCandidate_promise())
-                    .candidatecounter(0) // 득표수 0
-                    .imgpath(imgPath) // img 이름g
-                    .build();
+        VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id()).orElseThrow(()->
+                new CustomException(700,"없는 투표 id "+requestCandidateDTO.getVote_id()));
 
-            candidateRepository.save(candidate);
-            ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
-            return responseCandidateDTO;
-        }
+        CandidateEntity candidate = CandidateEntity.builder()
+                .candidateid(requestCandidateDTO.getCandidate_id())
+                .voteid(vote)
+                .candidatespec(requestCandidateDTO.getCandidate_spec())
+                .candidatepromise(requestCandidateDTO.getCandidate_promise())
+                .candidatecounter(0) // 득표수 0
+                .imgpath(imgPath) // img 이름g
+                .build();
+
+        candidateRepository.save(candidate);
+        ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
+        return responseCandidateDTO;
+
     }
     public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String candidate_id){
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
@@ -100,9 +95,7 @@ public class CandidateService {
 
                 if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
                     if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
-                        Map<Integer,String> error = new HashMap<>();
-                        error.put(611,"확장자 오류");
-                        throw new CustomException(error);
+                        throw new CustomException(611,"확장자 오류");
                     }
 
                     String fileName= "img/" + vote_id + "-" + candidate_id;
@@ -112,25 +105,21 @@ public class CandidateService {
                     amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
 
                 } else {
-                    Map<Integer,String> error = new HashMap<>();
-                    error.put(612,"크기 오류 현재 크기 : "+image.getHeight() +"/"+ image.getWidth());
-                    throw new CustomException(error);
+                    throw new CustomException(612,"크기 오류 현재 크기 : "+image.getHeight() +"/"+ image.getWidth());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 Map<Integer,String> error = new HashMap<>();
                 error.put(614,"이미지 서버 에러");
-                throw new CustomException(error);
+                throw new CustomException(614,"이미지 서버 에러");
             } catch (CustomException e) {
-                Map<Integer, String> error = e.getError();
-                throw new CustomException(error);
+
+                throw new CustomException(e.getErrorCode(),e.getMessage());
             }
         }
-        Map<Integer, String> error = new HashMap<>();
-        error.put(613,"이미지 없음");
-        throw new CustomException(error);
+        throw new CustomException(613,"이미지 없음");
     }
-    public ResponseEntity<byte[]> ReadImage(String candidate_id, String vote_id){
+    public ResponseEntity<byte[]> ReadImage(String candidate_id, String vote_id) throws CustomException {
         String img = "img/"+vote_id+"-"+ candidate_id;
         S3Object s3Object = amazonS3Client.getObject(bucket, img);
         String contentType = s3Object.getObjectMetadata().getContentType();
@@ -142,7 +131,7 @@ public class CandidateService {
         } catch (IOException e) {
             // 에러 처리
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            throw new CustomException(614,"이미지 서버 에러");
         } finally {
             IOUtils.closeQuietly(stream); // 스트림 닫기
         }
@@ -168,9 +157,7 @@ public class CandidateService {
 
                 if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
                     if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
-                        Map<Integer,String> error = new HashMap<>();
-                        error.put(611,"확장자 오류");
-                        throw new CustomException(error);
+                        throw new CustomException(611,"확장자 오류");
                     }
                     String fileName= "img/" + vote_id + "-" + candidate_id;
                     amazonS3Client.deleteObject(bucket, fileName);
@@ -182,22 +169,15 @@ public class CandidateService {
 
 
                 } else {
-                    Map<Integer, String> error = new HashMap<>();
-                    error.put(612, "크기 오류 현재 크기 : " + image.getHeight() + "/" + image.getWidth());
-                    throw new CustomException(error);
+                    throw new CustomException(612, "크기 오류 현재 크기 : " + image.getHeight() + "/" + image.getWidth());
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Map<Integer,String> error = new HashMap<>();
-            error.put(614,"이미지 서버 에러");
-            throw new CustomException(error);
+            throw new CustomException(614,"이미지 서버 에러");
         } catch (CustomException e) {
-            Map<Integer, String> error = e.getError();
-            throw new CustomException(error);
+            throw new CustomException(e.getErrorCode(),e.getMessage());
         }
-        Map<Integer, String> error = new HashMap<>();
-        error.put(613,"이미지 없음");
-        throw new CustomException(error);
+        throw new CustomException(613,"이미지 없음");
         }
     }
 
@@ -211,10 +191,10 @@ public class CandidateService {
         else return null;
     }
 
-    public void DeleteCandidate(String vote_id, String candidate_id) {
+    public void DeleteCandidate(String vote_id, String candidate_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote,candidate_id).orElseThrow(()->
-                new IllformedLocaleException("없는 후보 "+candidate_id));
+                new CustomException(700,"없는 후보 "+candidate_id));
         candidateRepository.delete(candidate);
 
         String fileNameToDelete = "img/" + vote_id + "-" + candidate_id;

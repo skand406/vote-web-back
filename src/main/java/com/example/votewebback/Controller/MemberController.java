@@ -40,10 +40,7 @@ public class MemberController {
         if (userDTOList.getUser_id().equals(authentication.getName())){
             return ResponseEntity.ok(userDTOList);
         } else{
-
-            Map<Integer,String> error = new HashMap<>();
-            error.put(700,"사용할 수 없는 유저 id : " + user_id);
-            throw new CustomException(error);
+            throw new CustomException(700,"사용할 수 없는 유저 id : " + user_id);
         }
     }
     @PutMapping("/user/{user_id}")
@@ -57,10 +54,7 @@ public class MemberController {
             userService.DeleteUser(user_id);
             return ResponseEntity.ok().build();
         } else{
-
-            Map<Integer,String> error = new HashMap<>();
-            error.put(700,"사용할 수 없는 유저 id : " + user_id);
-            throw new CustomException(error);
+            throw new CustomException(700,"사용할 수 없는 유저 id : " + user_id);
         }
     }
 
@@ -82,7 +76,7 @@ public class MemberController {
         return "ok";
     }
     @DeleteMapping("/vote/{vote_id}")
-    public ResponseEntity<String> VoteRemove(@PathVariable("vote_id") String vote_id){
+    public ResponseEntity<String> VoteRemove(@PathVariable("vote_id") String vote_id) throws CustomException {
         voteService.DeleteVote(vote_id);
         return ResponseEntity.ok().build();
     }
@@ -112,7 +106,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/candidate/{vote_id}/{candidate_id}")
-    public ResponseEntity<String> CandidateRemove(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id){
+    public ResponseEntity<String> CandidateRemove(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id) throws CustomException {
         candidateService.DeleteCandidate(vote_id,candidate_id);
         return ResponseEntity.ok().build();
     }

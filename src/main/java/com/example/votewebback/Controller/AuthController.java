@@ -69,9 +69,7 @@ public class AuthController {
     public ResponseEntity<String> AuthEmail(@RequestBody Map<String,String> code) throws CustomException {
         String authCode=code.get("code");
         if(redisService.getData(authCode)==null) {
-            Map<Integer,String> error = new HashMap<>();
-            error.put(640,"인증 실패");
-            throw new CustomException(error);
+            throw new CustomException(640,"인증 실패");
         }
         return ResponseEntity.ok().build();
     }

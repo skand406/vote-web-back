@@ -28,11 +28,11 @@ public class PublicController {
         return ResponseEntity.ok(userService.SearchUserid(requestUserDTO));
     }
     @PutMapping("/user/pw")
-    public ResponseEntity<String> UserResetPW(@RequestBody Map<String,String> user){
+    public ResponseEntity<String> UserResetPW(@RequestBody Map<String,String> user) throws CustomException {
         String user_id = user.get("user_id");
         String user_email = user.get("user_email");
-        String status = userService.UpdateUserPW(user_id,user_email);
-        return ResponseEntity.ok(status);
+        userService.UpdateUserPW(user_id,user_email);
+        return ResponseEntity.ok().build();
     }
 
     //투표 관련
@@ -57,7 +57,7 @@ public class PublicController {
 
     //후보 관련
     @GetMapping("candidate/img/{vote_id}/{student_id}")
-    public ResponseEntity<byte[]> CandidateInfoImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
+    public ResponseEntity<byte[]> CandidateInfoImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id) throws CustomException {
         return candidateService.ReadImage(student_id,vote_id);
 
     }

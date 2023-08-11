@@ -45,7 +45,7 @@ public class SecurityConfig {
                     .authenticationEntryPoint(authenticationEntryPoint)
                     .accessDeniedHandler(accessDeniedHandler))*/
             .authorizeHttpRequests(authorize->authorize
-                    .requestMatchers("/publices/**","/auths/**","/swagger-ui/**").permitAll()
+                    .requestMatchers("/publices/**","/auths/**","/swagger-ui/**","/v3/**").permitAll()
                     .requestMatchers("/members/**").hasRole("MEMBER")
                     .anyRequest().authenticated() //그 외 인증 없이 접근x
             )
