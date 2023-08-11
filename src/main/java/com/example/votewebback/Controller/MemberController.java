@@ -40,8 +40,7 @@ public class MemberController {
         if (userDTOList.getUser_id().equals(authentication.getName())){
             return ResponseEntity.ok(userDTOList);
         } else{
-            System.out.println(userDTOList.getUser_id());
-            System.out.println(authentication.getName());
+
             Map<Integer,String> error = new HashMap<>();
             error.put(700,"사용할 수 없는 유저 id : " + user_id);
             throw new CustomException(error);
@@ -51,9 +50,18 @@ public class MemberController {
     public String UserModify(@PathVariable("user_id") String user_id){
         return "ok";
     }
-    @DeleteMapping("/user/{user_id}")
-    public String UserRemove(@PathVariable("user_id") String user_id){
-        return "ok";
+    @DeleteMapping
+    public ResponseEntity<String> UserRemove(@PathVariable("user_id") String user_id) throws CustomException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (user_id.equals(authentication.getName())){
+            userService.DeleteUser(user_id);
+            return ResponseEntity.ok().build();
+        } else{
+
+            Map<Integer,String> error = new HashMap<>();
+            error.put(700,"사용할 수 없는 유저 id : " + user_id);
+            throw new CustomException(error);
+        }
     }
 
     //투표 관련
@@ -74,8 +82,9 @@ public class MemberController {
         return "ok";
     }
     @DeleteMapping("/vote/{vote_id}")
-    public String VoteRemove(@PathVariable("vote_id") String vote_id){
-        return "ok";
+    public ResponseEntity<String> VoteRemove(@PathVariable("vote_id") String vote_id){
+        voteService.DeleteVote(vote_id);
+        return ResponseEntity.ok().build();
     }
 
     //후보 관련
@@ -96,15 +105,16 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
     @PutMapping("/candidate/img/{vote_id}/{student_id}")
-    public ResponseEntity<String> CandidateModifyImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id,
-                                                     @RequestParam("image") MultipartFile file)throws IOException{
-        String status = candidateService.UpdateImage(file,vote_id,student_id);
+    public ResponseEntity<String> CandidateModifyImg(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id,
+                                                     @RequestParam("image") MultipartFile file) throws IOException, CustomException {
+        candidateService.UpdateImage(file,vote_id,candidate_id);
 
-        return ResponseEntity.ok(status);
+        return ResponseEntity.ok().build();
     }
-    @DeleteMapping("/candidate/{vote_id}/{student_id}")
-    public String CandidateRemove(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
-        return "ok";
+    @DeleteMapping("/candidate/{vote_id}/{candidate_id}")
+    public ResponseEntity<String> CandidateRemove(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id){
+        candidateService.DeleteCandidate(vote_id,candidate_id);
+        return ResponseEntity.ok().build();
     }
     @PutMapping("/candidate/{vote_id}/{student_id}")
     public String CandidateModify(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){

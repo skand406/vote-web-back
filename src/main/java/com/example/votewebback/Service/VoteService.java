@@ -20,7 +20,8 @@ public class VoteService {
     private final CandidateRepository candidateRepository;
     private final ElectorRepository electorRepository;
     private final StudentRepository studentRepository;
-
+    private final CandidateService candidateService;
+    private final ElectorService electorService;
 
 
     public ResponseDTO.VoteDTO CreateVote(RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
@@ -94,7 +95,7 @@ public class VoteService {
 
     @Transactional
     public void SumitVote(String candidate_id, String student_id, String vote_id) throws CustomException {
-        VoteEntity vote = voteRepository.findByVoteid(vote_id);
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         StudentEntity student = studentRepository.findByStudentid(student_id);
         CandidateEntity candidate=candidateRepository.findByVoteidAndCandidateid(vote,candidate_id).get();
         ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote,student).get();
@@ -105,9 +106,23 @@ public class VoteService {
         }
         else {
             Map<Integer,String> error = new HashMap<>();
-            error.put(650,"이미 투표한 유권자" );
+            error.put(670,"이미 투표한 유권자" );
             throw new CustomException(error);
         }
 
+    }
+
+    public void DeleteVote(String vote_id) {
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).orElseThrow(()->
+                new IllformedLocaleException("없는 투표"+vote_id));
+        voteRepository.delete(vote);
+        List<CandidateEntity> candidateList = candidateRepository.findByVoteid(vote);
+        for(CandidateEntity c:candidateList){
+            candidateService.DeleteCandidate(vote_id,c.getCandidateid());
+        }
+        List<ElectorEntity> electorList = electorRepository.findByVoteid(vote);
+        for(ElectorEntity e:electorList){
+            electorService.DeleteElector(vote_id,e.getStudentid());
+        }
     }
 }

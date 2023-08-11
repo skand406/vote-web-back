@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface ElectorRepository extends JpaRepository<ElectorEntity, VoteStudentIdKey> {
 
     Optional<ElectorEntity> findByVoteidAndStudentid(VoteEntity vote_id, StudentEntity student_id);
-
-
+    List<ElectorEntity> findByVoteid(VoteEntity vote);
 }

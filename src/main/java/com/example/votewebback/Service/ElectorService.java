@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.IllformedLocaleException;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,14 +45,14 @@ public class ElectorService {
             for (StudentEntity student : studentList) {
                 ElectorEntity elector = ElectorEntity.builder()
                         .studentid(studentRepository.findByStudentid(student.getStudentid()))
-                        .voteid(voteRepository.findByVoteid(vote_id))
+                        .voteid(voteRepository.findByVoteid(vote_id).get())
                         .voteconfirm(false)
                         .build();
                 electorRepository.save(elector);
             }
     }
     public String CheckElectorAuthority(String  vote_id, String student_id, String email){
-        VoteEntity vote=voteRepository.findByVoteid(vote_id);
+        VoteEntity vote=voteRepository.findByVoteid(vote_id).get();
         StudentEntity student=studentRepository.findByStudentid(student_id);
         Optional<ElectorEntity> elector = electorRepository.findByVoteidAndStudentid(vote,student);
         if(!elector.isEmpty()){
@@ -64,6 +65,14 @@ public class ElectorService {
             else return "이메일이 일치하지 않습니다.";
         }
         else return "권한이 없는 유권자입니다.";
+    }
+
+    public void DeleteElector(String vote_id, StudentEntity student_id) {
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote,student_id).orElseThrow(()->
+                new IllformedLocaleException("없는 유권자"+student_id));
+        electorRepository.delete(elector);
+
     }
 }
 

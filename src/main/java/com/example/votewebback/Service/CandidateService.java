@@ -15,6 +15,7 @@ import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Entity.*;
 import com.example.votewebback.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.example.votewebback.Entity.VoteType.PEOPLE;
 
@@ -46,7 +44,7 @@ public class CandidateService {
     private String bucket;
 
     public List<ResponseDTO.CandidateDTO> ReadCandidateListByVoteId(String vote_id){
-        VoteEntity vote = voteRepository.findByVoteid(vote_id);
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         List<CandidateEntity> candidateList = candidateRepository.findByVoteid(vote);
         List<ResponseDTO.CandidateDTO> responseCandidateList = new ArrayList<>();
 
@@ -59,7 +57,7 @@ public class CandidateService {
     }
     public ResponseDTO.CandidateDTO  CreateCandidate(RequestDTO.CandidateDTO requestCandidateDTO) throws CustomException {
         String imgPath = (requestCandidateDTO.getVote_id()) + "-" + (requestCandidateDTO.getCandidate_id());
-        VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id());
+        VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id()).get();
         if (vote == null) {
             Map<Integer,String> error = new HashMap<>();
             error.put(700,"사용할 수 없는 투표 id : " + requestCandidateDTO.getVote_id());
@@ -82,12 +80,12 @@ public class CandidateService {
         }
     }
     public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String candidate_id){
-        VoteEntity vote = voteRepository.findByVoteid(vote_id);
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote, candidate_id).get();
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
         return responseCandidateDTO;
     }
-    public Void CreateImage(MultipartFile file, String vote_id, String student_id) throws IOException, CustomException {
+    public void CreateImage(@NotNull MultipartFile file, String vote_id, String candidate_id) throws IOException, CustomException {
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
@@ -107,8 +105,7 @@ public class CandidateService {
                         throw new CustomException(error);
                     }
 
-                    String fileName= "img/" + vote_id + "-" + student_id;
-                    String fileUrl= "https://" + bucket + "/" + fileName;
+                    String fileName= "img/" + vote_id + "-" + candidate_id;
                     ObjectMetadata metadata= new ObjectMetadata();
                     metadata.setContentType(file.getContentType());
                     metadata.setContentLength(file.getSize());
@@ -133,8 +130,8 @@ public class CandidateService {
         error.put(613,"이미지 없음");
         throw new CustomException(error);
     }
-    public ResponseEntity<byte[]> ReadImage(String student_id,String vote_id){
-        String img = "img/"+vote_id+"-"+student_id;
+    public ResponseEntity<byte[]> ReadImage(String candidate_id, String vote_id){
+        String img = "img/"+vote_id+"-"+ candidate_id;
         S3Object s3Object = amazonS3Client.getObject(bucket, img);
         String contentType = s3Object.getObjectMetadata().getContentType();
         S3ObjectInputStream stream = s3Object.getObjectContent();
@@ -156,7 +153,7 @@ public class CandidateService {
                 .contentType(MediaType.parseMediaType(contentType)) // 이미지 타입에 따라 변경 (JPEG, PNG 등)
                 .body(imageBytes);
     }
-    public String UpdateImage(MultipartFile file, String vote_id, String student_id) throws IOException {
+    public void UpdateImage(MultipartFile file, String vote_id, String candidate_id) throws IOException, CustomException {
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
@@ -171,39 +168,57 @@ public class CandidateService {
 
                 if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
                     if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
-                        return "올바른 이미지 확장자가 아닙니다. (png, jpg 파일만 업로드 가능)";
+                        Map<Integer,String> error = new HashMap<>();
+                        error.put(611,"확장자 오류");
+                        throw new CustomException(error);
                     }
-                    String fileNameToDelete = "img/" + vote_id + "-" + student_id;
-                    amazonS3Client.deleteObject(bucket, fileNameToDelete);
+                    String fileName= "img/" + vote_id + "-" + candidate_id;
+                    amazonS3Client.deleteObject(bucket, fileName);
 
-                    String fileName= "img/" + vote_id + "-" + student_id;
-                    String fileUrl= "https://" + bucket + "/" + fileName;
                     ObjectMetadata metadata= new ObjectMetadata();
                     metadata.setContentType(file.getContentType());
                     metadata.setContentLength(file.getSize());
                     amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
 
-                    return "이미지 교체 성공 (크기: "+ width +", "+ height +")\n"
-                            + fileUrl;
+
                 } else {
-                    return "이미지가 올바르지 않습니다. (원하는 크기: 3.5:4.0)";
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "이미지 업로드 실패";
+                    Map<Integer, String> error = new HashMap<>();
+                    error.put(612, "크기 오류 현재 크기 : " + image.getHeight() + "/" + image.getWidth());
+                    throw new CustomException(error);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Map<Integer,String> error = new HashMap<>();
+            error.put(614,"이미지 서버 에러");
+            throw new CustomException(error);
+        } catch (CustomException e) {
+            Map<Integer, String> error = e.getError();
+            throw new CustomException(error);
         }
-        return "이미지 없음";
+        Map<Integer, String> error = new HashMap<>();
+        error.put(613,"이미지 없음");
+        throw new CustomException(error);
+        }
     }
 
     public ResponseDTO.StudentDTO IsPeopleVote(RequestDTO.CandidateDTO requestCandidateDTO) {
-        VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id());
+        VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id()).get();
 
         if (vote.getVotetype() == PEOPLE) {
             StudentEntity student = studentRepository.findByStudentid(requestCandidateDTO.getCandidate_id());
             return new ResponseDTO.StudentDTO(student);
         }
         else return null;
+    }
+
+    public void DeleteCandidate(String vote_id, String candidate_id) {
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote,candidate_id).orElseThrow(()->
+                new IllformedLocaleException("없는 후보 "+candidate_id));
+        candidateRepository.delete(candidate);
+
+        String fileNameToDelete = "img/" + vote_id + "-" + candidate_id;
+        amazonS3Client.deleteObject(bucket, fileNameToDelete);
     }
 }
 

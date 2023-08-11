@@ -5,6 +5,7 @@ import com.example.votewebback.DTO.*;
 import com.example.votewebback.Entity.*;
 import com.example.votewebback.RandomCode;
 import com.example.votewebback.Repository.UserRepository;
+import com.example.votewebback.Repository.VoteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final RedisService redisService;
+    private final VoteRepository voteRepository;
+    private final VoteService voteService;
 
     public UserEntity CreateUser(RequestDTO.UserDTO userDTO){
         UserEntity user = UserEntity.builder()
@@ -96,5 +99,15 @@ public class UserService {
         String code = RandomCode.randomCode();
         redisService.setDataExpire(code, user_email, 60 * 5L);
         emailService.sendMail(user_email, code,"email");
+    }
+
+    public void DeleteUser(String user_id) {
+        UserEntity user = userRepository.findByUserid(user_id).orElseThrow(()->
+                new IllformedLocaleException("없는 회원"+user_id));
+        userRepository.delete(user);
+        List<VoteEntity> voteList = voteRepository.findByUserid(user);
+        for(VoteEntity v:voteList){
+            voteService.DeleteVote(v.getVoteid());
+        }
     }
 }
