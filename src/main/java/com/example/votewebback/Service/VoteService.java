@@ -86,20 +86,24 @@ public class VoteService {
     }
 
     @Transactional
-    public void SumitVote(String candidate_id, String student_id, String vote_id) throws CustomException {
+    public void SumitVote(List<String> candidate_id_list, String student_id, String vote_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         StudentEntity student = studentRepository.findByStudentid(student_id).get();
-        CandidateEntity candidate=candidateRepository.findByVoteidAndCandidateid(vote,candidate_id).get();
         ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote,student).get();
-        int num = candidate.getCandidatecounter();
+
+        List<String> candidateList=candidate_id_list;
+
         if(!elector.isVoteconfirm()){
-            candidate.setCandidatecounter(num+1);
             elector.setVoteconfirm(true);
+            for(String candidate_id:candidateList){
+                CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote,candidate_id).get();
+                int num = candidate.getCandidatecounter();
+                candidate.setCandidatecounter(num+1);
+            }
         }
         else {
             throw new CustomException(670,"이미 투표한 유권자");
         }
-
     }
 
     public void DeleteVote(String vote_id) throws CustomException {
