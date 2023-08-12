@@ -80,5 +80,10 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<String> RefreshTokenAdd(@RequestBody Map<String,String> refresh){
+        String refreshToken = refresh.get("refreshToken");
 
+        return ResponseEntity.ok("");
+    }
 }
