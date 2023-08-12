@@ -83,13 +83,17 @@ public class MemberController {
 
     //후보 관련
     @PostMapping("/candidate/register")
-    public ResponseEntity<Map<String,Object>> CandidateAdd(@RequestBody RequestDTO.CandidateDTO requestCandidateDTO) throws CustomException {
-        ResponseDTO.CandidateDTO responseCandidateDTO = candidateService.CreateCandidate(requestCandidateDTO);
-        ResponseDTO.StudentDTO responseStudentDTO =candidateService.IsPeopleVote(requestCandidateDTO);
+    public ResponseEntity<Map<String,Object>> CandidateAdd(@RequestBody List<RequestDTO.CandidateDTO> requestCandidateDTOList) throws CustomException {
+        List<ResponseDTO.CandidateDTO> responseCandidateDTOList = null;
+        List<ResponseDTO.StudentDTO> responseStudentDTOList = null;
+        for(RequestDTO.CandidateDTO requestCandidateDTO:requestCandidateDTOList) {
+            responseCandidateDTOList.add(candidateService.CreateCandidate(requestCandidateDTO));
+            responseStudentDTOList.add(candidateService.IsPeopleVote(requestCandidateDTO));
+        }
 
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("candidate",responseCandidateDTO);
-        responseMap.put("student",responseStudentDTO);
+        responseMap.put("candidate",responseCandidateDTOList);
+        responseMap.put("student",responseStudentDTOList);
         return ResponseEntity.ok(responseMap);
     }
     @PostMapping("/candidate/img/upload")
