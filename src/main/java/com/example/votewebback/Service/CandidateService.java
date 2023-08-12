@@ -181,11 +181,12 @@ public class CandidateService {
         }
     }
 
-    public ResponseDTO.StudentDTO IsPeopleVote(RequestDTO.CandidateDTO requestCandidateDTO) {
+    public ResponseDTO.StudentDTO IsPeopleVote(RequestDTO.CandidateDTO requestCandidateDTO) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id()).get();
 
         if (vote.getVotetype() == PEOPLE) {
-            StudentEntity student = studentRepository.findByStudentid(requestCandidateDTO.getCandidate_id());
+            StudentEntity student = studentRepository.findByStudentid(requestCandidateDTO.getCandidate_id()).orElseThrow(()->
+                    new CustomException(602,"투표 타입과 후보 타입이 맞지 않음  "+vote.getVotetype()));
             return new ResponseDTO.StudentDTO(student);
         }
         else return null;

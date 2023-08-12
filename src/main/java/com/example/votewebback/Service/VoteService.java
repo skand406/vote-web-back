@@ -88,7 +88,7 @@ public class VoteService {
     @Transactional
     public void SumitVote(String candidate_id, String student_id, String vote_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
-        StudentEntity student = studentRepository.findByStudentid(student_id);
+        StudentEntity student = studentRepository.findByStudentid(student_id).get();
         CandidateEntity candidate=candidateRepository.findByVoteidAndCandidateid(vote,candidate_id).get();
         ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote,student).get();
         int num = candidate.getCandidatecounter();

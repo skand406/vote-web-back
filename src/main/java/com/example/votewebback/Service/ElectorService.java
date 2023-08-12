@@ -44,7 +44,7 @@ public class ElectorService {
 
             for (StudentEntity student : studentList) {
                 ElectorEntity elector = ElectorEntity.builder()
-                        .studentid(studentRepository.findByStudentid(student.getStudentid()))
+                        .studentid(studentRepository.findByStudentid(student.getStudentid()).get())
                         .voteid(voteRepository.findByVoteid(vote_id).get())
                         .voteconfirm(false)
                         .build();
@@ -53,7 +53,7 @@ public class ElectorService {
     }
     public String CheckElectorAuthority(String  vote_id, String student_id, String email){
         VoteEntity vote=voteRepository.findByVoteid(vote_id).get();
-        StudentEntity student=studentRepository.findByStudentid(student_id);
+        StudentEntity student=studentRepository.findByStudentid(student_id).get();
         Optional<ElectorEntity> elector = electorRepository.findByVoteidAndStudentid(vote,student);
         if(!elector.isEmpty()){
             if(email.equals(student.getStudentemail())){

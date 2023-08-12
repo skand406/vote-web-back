@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,11 +85,15 @@ public class MemberController {
     //후보 관련
     @PostMapping("/candidate/register")
     public ResponseEntity<Map<String,Object>> CandidateAdd(@RequestBody List<RequestDTO.CandidateDTO> requestCandidateDTOList) throws CustomException {
-        List<ResponseDTO.CandidateDTO> responseCandidateDTOList = null;
-        List<ResponseDTO.StudentDTO> responseStudentDTOList = null;
+        for(RequestDTO.CandidateDTO r:requestCandidateDTOList){
+            System.out.println(r.getCandidate_id());
+        }
+        List<ResponseDTO.CandidateDTO> responseCandidateDTOList = new ArrayList<>();;
+        List<ResponseDTO.StudentDTO> responseStudentDTOList = new ArrayList<>();;
         for(RequestDTO.CandidateDTO requestCandidateDTO:requestCandidateDTOList) {
             responseCandidateDTOList.add(candidateService.CreateCandidate(requestCandidateDTO));
-            responseStudentDTOList.add(candidateService.IsPeopleVote(requestCandidateDTO));
+            if(candidateService.IsPeopleVote(requestCandidateDTO) != null)
+                responseStudentDTOList.add(candidateService.IsPeopleVote(requestCandidateDTO));
         }
 
         Map<String, Object> responseMap = new HashMap<>();
