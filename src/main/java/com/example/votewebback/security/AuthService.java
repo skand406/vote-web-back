@@ -2,7 +2,7 @@ package com.example.votewebback.security;
 
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Entity.UserEntity;
-import com.example.votewebback.Repository.UserRepository;
+import com.example.votewebback.Service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final RedisService redisService;
 
     public ResponseDTO.LoginDTO authenticate(UserEntity user){
         authenticationManager.authenticate(
@@ -23,7 +23,7 @@ public class AuthService {
         //정상 로직 및 에러 로직 넣어야 함
         String accesstoken = jwtService.generateAccessToken(user);
         String refreshtoken = jwtService.generateRefreshToken(user);
-
+        redisService.setDataExpire(user.getUserid(), refreshtoken, 1000 * 60 * 60 * 24 * 3);
         return new ResponseDTO.LoginDTO(accesstoken, refreshtoken);
     }
 }

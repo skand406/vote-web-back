@@ -3,20 +3,21 @@ package com.example.votewebback.Controller;
 import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
-import com.example.votewebback.Entity.StudentEntity;
-import com.example.votewebback.Entity.UserEntity;
-import com.example.votewebback.Entity.VoteEntity;
-import com.example.votewebback.Repository.StudentRepository;
-import com.example.votewebback.Repository.VoteRepository;
+import com.example.votewebback.Entity.*;
 import com.example.votewebback.Service.ElectorService;
 import com.example.votewebback.Service.RedisService;
 import com.example.votewebback.Service.UserService;
 import com.example.votewebback.security.AuthService;
+import com.example.votewebback.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -26,8 +27,10 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
     private final ElectorService electorService;
-
+    private final JwtService jwtService;
     private final RedisService redisService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @GetMapping("/logout")
     public String logout(){
@@ -81,9 +84,21 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> RefreshTokenAdd(@RequestBody Map<String,String> refresh){
+    public ResponseEntity<ResponseDTO.LoginDTO> RefreshTokenAdd(@RequestBody Map<String,String> refresh) throws CustomException {
         String refreshToken = refresh.get("refreshToken");
+        String user_id = jwtService.extractUsername(refreshToken);
+        System.out.println(user_id);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user_id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return ResponseEntity.ok("");
+        if(authentication != null && jwtService.isTokenValid(refreshToken,userDetails)){
+            System.out.println(authentication.getName());
+            if(refreshToken.equals(redisService.getData(authentication.getName()))) {
+                String accesstoken = jwtService.generateAccessToken(userDetails);
+                return ResponseEntity.ok(new ResponseDTO.LoginDTO(accesstoken,""));
+            }
+            else throw new CustomException(690,"잘못된 인증입니다.");
+        }
+        else throw new CustomException(691,"잘못된 토큰입니다.");
     }
 }
