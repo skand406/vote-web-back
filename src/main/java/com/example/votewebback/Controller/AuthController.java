@@ -88,19 +88,20 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<ResponseDTO.LoginDTO> RefreshTokenAdd(@RequestBody Map<String,String> refresh) throws CustomException {
         String refreshToken = refresh.get("refreshToken");
-        String user_id = jwtService.extractUsername(refreshToken);
-        System.out.println(user_id);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user_id);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!redisService.getData(refreshToken).equals("logout")) {
+            String user_id = jwtService.extractUsername(refreshToken);
+            System.out.println(user_id);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user_id);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication != null && jwtService.isTokenValid(refreshToken,userDetails)){
-            System.out.println(authentication.getName());
-            if(refreshToken.equals(redisService.getData(authentication.getName()))) {
-                String accesstoken = jwtService.generateAccessToken(userDetails);
-                return ResponseEntity.ok(new ResponseDTO.LoginDTO(accesstoken,""));
-            }
-            else throw new CustomException(690,"잘못된 인증입니다.");
+            if (authentication != null && jwtService.isTokenValid(refreshToken, userDetails)) {
+                System.out.println(authentication.getName());
+                if (refreshToken.equals(redisService.getData(authentication.getName()))) {
+                    String accesstoken = jwtService.generateAccessToken(userDetails);
+                    return ResponseEntity.ok(new ResponseDTO.LoginDTO(accesstoken, ""));
+                } else throw new CustomException(690, "잘못된 인증입니다.");
+            } else throw new CustomException(691, "잘못된 토큰입니다.");
         }
-        else throw new CustomException(691,"잘못된 토큰입니다.");
+        else throw new CustomException(691, "잘못된 토큰입니다.");
     }
 }
