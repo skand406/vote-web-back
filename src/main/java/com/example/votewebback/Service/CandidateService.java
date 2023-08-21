@@ -93,20 +93,16 @@ public class CandidateService {
                 double targetRatio = 350.0 / 400.0;
                 double actualRatio = (double) width / (double) height;
 
-                if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
-                    if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
-                        throw new CustomException(611,"확장자 오류");
-                    }
-
-                    String fileName= "img/" + vote_id + "-" + candidate_id;
-                    ObjectMetadata metadata= new ObjectMetadata();
-                    metadata.setContentType(file.getContentType());
-                    metadata.setContentLength(file.getSize());
-                    amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
-
-                } else {
-                    throw new CustomException(612,"크기 오류 현재 크기 : "+image.getHeight() +"/"+ image.getWidth());
+                if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
+                    throw new CustomException(611,"확장자 오류");
                 }
+
+                String fileName= "img/" + vote_id + "-" + candidate_id;
+                ObjectMetadata metadata= new ObjectMetadata();
+                metadata.setContentType(file.getContentType());
+                metadata.setContentLength(file.getSize());
+                amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 Map<Integer,String> error = new HashMap<>();
@@ -117,7 +113,7 @@ public class CandidateService {
                 throw new CustomException(e.getErrorCode(),e.getMessage());
             }
         }
-        throw new CustomException(613,"이미지 없음");
+        else throw new CustomException(613,"이미지 없음");
     }
     public ResponseEntity<byte[]> ReadImage(String candidate_id, String vote_id) throws CustomException {
         String img = "img/"+vote_id+"-"+ candidate_id;
@@ -155,30 +151,26 @@ public class CandidateService {
                 double targetRatio = 350.0 / 400.0;
                 double actualRatio = (double) width / (double) height;
 
-                if ((Math.abs(actualRatio - targetRatio) < 0.01)) {
-                    if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
-                        throw new CustomException(611,"확장자 오류");
-                    }
-                    String fileName= "img/" + vote_id + "-" + candidate_id;
-                    amazonS3Client.deleteObject(bucket, fileName);
 
-                    ObjectMetadata metadata= new ObjectMetadata();
-                    metadata.setContentType(file.getContentType());
-                    metadata.setContentLength(file.getSize());
-                    amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
+                if (!fileExtension.equalsIgnoreCase("image/png") && !fileExtension.equalsIgnoreCase("image/jpeg")) {
+                    throw new CustomException(611,"확장자 오류");
+                }
+                String fileName= "img/" + vote_id + "-" + candidate_id;
+                amazonS3Client.deleteObject(bucket, fileName);
+
+                ObjectMetadata metadata= new ObjectMetadata();
+                metadata.setContentType(file.getContentType());
+                metadata.setContentLength(file.getSize());
+                amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
 
 
-                } else {
-                    throw new CustomException(612, "크기 오류 현재 크기 : " + image.getHeight() + "/" + image.getWidth());
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new CustomException(614,"이미지 서버 에러");
+            } catch (CustomException e) {
+                throw new CustomException(e.getErrorCode(),e.getMessage());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CustomException(614,"이미지 서버 에러");
-        } catch (CustomException e) {
-            throw new CustomException(e.getErrorCode(),e.getMessage());
-        }
-        throw new CustomException(613,"이미지 없음");
-        }
+        } else throw new CustomException(613,"이미지 없음");
     }
 
     public ResponseDTO.StudentDTO IsPeopleVote(RequestDTO.CandidateDTO requestCandidateDTO) throws CustomException {
