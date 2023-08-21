@@ -102,16 +102,15 @@ public class MemberController {
         return ResponseEntity.ok(responseMap);
     }
     @PostMapping("/candidate/img/upload")
-    public ResponseEntity<String> CandidateSaveImg(@RequestParam String vote_id, @RequestParam String student_id,
+    public ResponseEntity<String> CandidateSaveImg(@RequestParam String vote_id, @RequestParam String candidate_id,
                                                    @RequestParam("image") MultipartFile file) throws IOException, CustomException {
-        candidateService.CreateImage(file,vote_id,student_id);
+        candidateService.CreateImage(file,vote_id,candidate_id);
         return ResponseEntity.ok().build();
     }
-    @PutMapping("/candidate/img/{vote_id}/{student_id}")
+    @PutMapping("/candidate/img/{vote_id}/{candidate_id}")
     public ResponseEntity<String> CandidateModifyImg(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id,
                                                      @RequestParam("image") MultipartFile file) throws IOException, CustomException {
         candidateService.UpdateImage(file,vote_id,candidate_id);
-
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/candidate/{vote_id}/{candidate_id}")
@@ -119,8 +118,8 @@ public class MemberController {
         candidateService.DeleteCandidate(vote_id,candidate_id);
         return ResponseEntity.ok().build();
     }
-    @PutMapping("/candidate/{vote_id}/{student_id}")
-    public String CandidateModify(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id){
+    @PutMapping("/candidate/{vote_id}/{candidate_id}")
+    public String CandidateModify(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id){
         return "ok";
     }
     @GetMapping("/candidate/student")
