@@ -32,9 +32,11 @@ public class AuthController {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @GetMapping("/logout")
-    public String logout(){
-        return "ok";
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody Map<String,String> refresh){
+        String refreshToken = refresh.get("refreshToken");
+        redisService.setData(refreshToken,"logout");
+        return ResponseEntity.ok().build();
     }
     @PostMapping("/id-checker")
     public ResponseEntity<String> IdChecker(@RequestBody Map<String,String> id) throws CustomException {
