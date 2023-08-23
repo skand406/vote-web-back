@@ -5,6 +5,7 @@ import com.example.votewebback.Entity.VoteEntity;
 import com.example.votewebback.Entity.VoteType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.time.LocalDate;
@@ -42,7 +43,12 @@ public class RequestDTO {
         private String candidate_spec;
         private String candidate_promise;
     }
-
+    @Getter
+    public static class ImgDTO{
+        private String vote_id;
+        private String candidate_id;
+        private MultipartFile img;
+    }
     public record LoginDTO(String user_id, String user_password){}
 
 }
