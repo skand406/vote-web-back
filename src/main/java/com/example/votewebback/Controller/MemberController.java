@@ -102,9 +102,9 @@ public class MemberController {
         return ResponseEntity.ok(responseMap);
     }
     @PostMapping("/candidate/img/upload")
-    public ResponseEntity<String> CandidateSaveImg(@RequestBody List<RequestDTO.ImgDTO> imgDTO) throws IOException, CustomException {
-        for(RequestDTO.ImgDTO f:imgDTO){
-            candidateService.CreateImage(f.getImg(),f.getVote_id(),f.getCandidate_id());
+    public ResponseEntity<String> CandidateSaveImg(@RequestBody List<MultipartFile> img) throws IOException, CustomException {
+        for(MultipartFile f:img){
+            candidateService.CreateImage(f,"vote_1234","candidate_id_1234");
         }
         return ResponseEntity.ok().build();
     }
