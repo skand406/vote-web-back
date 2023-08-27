@@ -1,5 +1,6 @@
 package com.example.votewebback.security;
 
+import com.example.votewebback.CustomException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -47,36 +48,31 @@ public class JwtService {
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-    public boolean isTokenValid(String token,UserDetails userDetails){
-        try {
-            extractAllClaims(token);
-            return true;
-        }catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-
-            System.out.println("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-
-            System.out.println("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-
-            System.out.println("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-
-            System.out.println("JWT 토큰이 잘못되었습니다.");
-        }
-        return false;
+    public boolean isTokenValid(String token) throws CustomException {
+        extractAllClaims(token);
+        return true;
     }
-    public String extractUsername(String token) {
+    public String extractUsername(String token) throws CustomException {
         return extractClaim(token, Claims::getSubject);
     }
 
-    private <T> T extractClaim(String token, Function<Claims,T> claimsresolver) {
+    private <T> T extractClaim(String token, Function<Claims,T> claimsresolver) throws CustomException {
         final Claims claims = extractAllClaims(token).getBody();
         return claimsresolver.apply(claims);
     }
 
-    Jws<Claims> extractAllClaims(String token){
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
+    Jws<Claims> extractAllClaims(String token) throws CustomException {
+        try {
+            return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            throw new CustomException(693, e + ": 잘못된 인증입니다.");
+        } catch (ExpiredJwtException e){
+            throw new CustomException(692,e+": 만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            throw new CustomException(691,e+ ": 지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(690, e+": JWT 토큰이 잘못되었습니다.");
+        }
     }
     //시크릿키 할당
     private Key getSignInKey(){
@@ -84,7 +80,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyByte);
     }
 
-    public Authentication getAuthentication(String token) {
+    public Authentication getAuthentication(String token) throws CustomException {
         Claims claims = extractAllClaims(token).getBody();
 
         List<String> roles = (List<String>) claims.get("roles");
