@@ -93,4 +93,10 @@ public class JwtService {
 
         return new UsernamePasswordAuthenticationToken(principal,token,authorities);
     }
+
+    public Date getExpirationDateToken(String jwt) throws CustomException {
+        Claims claims = extractAllClaims(jwt).getBody();
+        return claims.getExpiration();
+    }
+
 }
