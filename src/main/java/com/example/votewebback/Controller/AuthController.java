@@ -89,10 +89,7 @@ public class AuthController {
     public ResponseEntity<ResponseDTO.LoginDTO> RefreshTokenAdd(@RequestBody Map<String,String> refresh) throws CustomException {
         String refreshToken = refresh.get("refreshToken");
         String dataFromRedis = redisService.getData(refreshToken);
-        if (dataFromRedis == null) {
-            throw new CustomException(692, "만료된 JWT 토큰입니다.");
-        }
-        if(!dataFromRedis.equals("logout")) {
+        if(dataFromRedis==null) {
             String user_id = jwtService.extractUsername(refreshToken);
             System.out.println(user_id);
             UserDetails userDetails = userDetailsService.loadUserByUsername(user_id);
@@ -101,11 +98,12 @@ public class AuthController {
             if (authentication != null && jwtService.isTokenValid(refreshToken)) {
                 System.out.println(authentication.getName());
                 if (refreshToken.equals(redisService.getData(authentication.getName()))) {
-                    String accesstoken = jwtService.generateAccessToken(userDetails);
-                    return ResponseEntity.ok(new ResponseDTO.LoginDTO(accesstoken, ""));
+                    String accessToken = jwtService.generateAccessToken(userDetails);
+                    return ResponseEntity.ok(new ResponseDTO.LoginDTO(accessToken, ""));
                 } else throw new CustomException(693, "잘못된 인증입니다.");
             } else throw new CustomException(690, "JWT 토큰이 잘못되었습니다.");
-        }
-        else throw new CustomException(690, "JWT 토큰이 잘못되었습니다.");
+        } else if (dataFromRedis.equals("logout")) {
+            throw new CustomException(690, "JWT 토큰이 잘못되었습니다.");
+        }else throw new CustomException(690, "JWT 토큰이 잘못되었습니다.");
     }
 }

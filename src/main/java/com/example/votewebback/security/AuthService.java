@@ -21,9 +21,9 @@ public class AuthService {
                 //내부적으로 암호화된 비번 확인 따라서 비번 인코딩 안해도 됨.
         );
         //정상 로직 및 에러 로직 넣어야 함
-        String accesstoken = jwtService.generateAccessToken(user);
-        String refreshtoken = jwtService.generateRefreshToken(user);
-        redisService.setDataExpire(user.getUserid(), refreshtoken, 1000 * 60 * 60 * 24 * 3);
-        return new ResponseDTO.LoginDTO(accesstoken, refreshtoken);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        redisService.setDataExpire(user.getUserid(), refreshToken, 1000 * 60 * 60 * 24 * 3);
+        return new ResponseDTO.LoginDTO(accessToken, refreshToken);
     }
 }

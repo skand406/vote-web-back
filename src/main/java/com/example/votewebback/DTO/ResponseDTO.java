@@ -86,6 +86,6 @@ public class ResponseDTO {
         }
     }
 
-    public record LoginDTO(String accesstoken,String refreshtoken){}
+    public record LoginDTO(String accessToken,String refreshToken){}
 
 }
