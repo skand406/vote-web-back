@@ -1,5 +1,6 @@
 package com.example.votewebback.Service;
 
+import com.example.votewebback.CustomException;
 import com.example.votewebback.Entity.ElectorEntity;
 import com.example.votewebback.Entity.StudentEntity;
 import com.example.votewebback.Entity.VoteEntity;
@@ -67,10 +68,10 @@ public class ElectorService {
         else return "권한이 없는 유권자입니다.";
     }
 
-    public void DeleteElector(String vote_id, StudentEntity student_id) {
+    public void DeleteElector(String vote_id, StudentEntity student_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote,student_id).orElseThrow(()->
-                new IllformedLocaleException("없는 유권자"+student_id));
+                new CustomException(700,"없는 유권자"+student_id));
         electorRepository.delete(elector);
 
     }
