@@ -47,8 +47,9 @@ public class MemberController {
         }
     }
     @PutMapping("/user/{user_id}")
-    public String UserModify(@PathVariable("user_id") String user_id){
-        return "ok";
+    public ResponseEntity<ResponseDTO.UserDTO> UserModify(@PathVariable("user_id") String user_id, @RequestBody RequestDTO.UserDTO userDTO) throws CustomException {
+        ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userService.UpdateUserPersonalInfo(user_id, userDTO));
+        return ResponseEntity.ok(responseUserDTO);
     }
     @DeleteMapping
     public ResponseEntity<String> UserRemove(@PathVariable("user_id") String user_id) throws CustomException {

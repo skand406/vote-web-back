@@ -53,7 +53,6 @@ public class UserService {
             ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userOptional.get());
             return responseUserDTO;
         }
-
     public String SearchUserid(RequestDTO.UserDTO RequestUserDTO) throws CustomException {
         UserEntity user = userRepository.findByUseremail(RequestUserDTO.getUser_email()).orElseThrow(()->
                 new CustomException(632,"가입하지 않은 사용자"));
@@ -71,7 +70,6 @@ public class UserService {
             throw new CustomException(621, "중복된 id");
         }
     }
-
     @Transactional
     public void UpdateUserPW(String user_id,String user_email) throws CustomException {
         UserEntity user=userRepository.findByUserid(user_id).orElseThrow(()->
@@ -83,7 +81,6 @@ public class UserService {
         user.setUserpassword(passwordEncoder.encode(temPW));
         emailService.sendMail(user_email,temPW,"pw");
     }
-
     public void CheckUserEmail(String user_email) throws CustomException {
         if(!userRepository.findByUseremail(user_email).isEmpty()) {
             throw new CustomException(650,"이미 가입된 이메일 " +user_email);
@@ -92,7 +89,6 @@ public class UserService {
         redisService.setDataExpire(code, user_email, 60 * 5L);
         emailService.sendMail(user_email, code,"email");
     }
-
     public void DeleteUser(String user_id) throws CustomException {
         UserEntity user = userRepository.findByUserid(user_id).orElseThrow(()->
                 new CustomException(700,"없는 회원"+user_id));
@@ -123,5 +119,19 @@ public class UserService {
             //System.out.println(student.getStudentemail());
         }
 
+    }
+    @Transactional
+    public UserEntity UpdateUserPersonalInfo(String user_id, RequestDTO.UserDTO userDTO) throws CustomException {
+        UserEntity existingUser = userRepository.findByUserid(user_id)
+                .orElseThrow(() -> new CustomException(700, "존재하지 않는 유저 id : " + user_id));
+
+        UserEntity user = existingUser.toBuilder()
+                .username(userDTO.getUser_name() != null ? userDTO.getUser_name() : existingUser.getUsername())
+                .usertel(userDTO.getUser_tel() != null ? userDTO.getUser_tel() : existingUser.getUsertel())
+                .useremail(userDTO.getUser_email() != null ? userDTO.getUser_email() : existingUser.getUseremail())
+                .build();
+
+        userRepository.save(user);
+        return user;
     }
 }
