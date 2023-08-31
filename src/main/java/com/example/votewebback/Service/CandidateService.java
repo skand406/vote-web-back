@@ -196,6 +196,15 @@ public class CandidateService {
         String fileNameToDelete = "img/" + vote_id + "-" + candidate_id;
         amazonS3Client.deleteObject(bucket, fileNameToDelete);
     }
+
+    public List<CandidateEntity> ReadCandidateCount(String vote_id){
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        List<CandidateEntity> candidateList = candidateRepository.findByVoteid(vote);
+        candidateList.sort(Comparator.comparing(CandidateEntity::getCandidatecounter).reversed());
+        //candidateList.stream().max()
+        String elected_candidate_id = candidateList.get(0).getCandidateid();
+        return candidateList;
+    }
 }
 
 
