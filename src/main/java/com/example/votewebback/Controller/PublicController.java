@@ -3,7 +3,9 @@ package com.example.votewebback.Controller;
 import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Entity.CandidateEntity;
 import com.example.votewebback.Service.CandidateService;
+import com.example.votewebback.Service.ElectorService;
 import com.example.votewebback.Service.UserService;
 import com.example.votewebback.Service.VoteService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class PublicController {
     private final UserService userService;
     private final VoteService voteService;
     private final CandidateService candidateService;
+    private final ElectorService electorService;
 
     //유저 관련
     @PostMapping("/user/id")
@@ -43,6 +46,8 @@ public class PublicController {
     }
     @GetMapping("/vote/result/{vote_id}")
     public String VoteResult(@PathVariable("vote_id") String vote_id){
+        List<CandidateEntity> electedCandidateList = candidateService.ReadCandidateCount(vote_id);
+        //electorService.ReadParticipationRate(vote_id);
         return "ok";
     }
 

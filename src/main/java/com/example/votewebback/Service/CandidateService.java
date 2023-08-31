@@ -213,9 +213,12 @@ public class CandidateService {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         List<CandidateEntity> candidateList = candidateRepository.findByVoteid(vote);
         candidateList.sort(Comparator.comparing(CandidateEntity::getCandidatecounter).reversed());
-        //candidateList.stream().max()
-        String elected_candidate_id = candidateList.get(0).getCandidateid();
-        return candidateList;
+        List<CandidateEntity> electedCandidateList = new ArrayList<>();
+        int max = candidateList.get(0).getCandidatecounter();
+        for(CandidateEntity c : candidateList){
+            if(c.getCandidatecounter()==max) electedCandidateList.add(c);
+        }
+        return electedCandidateList;
     }
 }
 
