@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -33,7 +34,6 @@ import static com.example.votewebback.Entity.VoteType.PEOPLE;
 @RequiredArgsConstructor
 public class CandidateService {
 
-    @Autowired
     private final CandidateRepository candidateRepository;
     private final VoteRepository voteRepository;
     private final StudentRepository studentRepository;
@@ -116,28 +116,31 @@ public class CandidateService {
         else throw new CustomException(613,"이미지 없음");
     }
     public ResponseEntity<byte[]> ReadImage(String candidate_id, String vote_id) throws CustomException {
-        String img = "img/"+vote_id+"-"+ candidate_id;
-        S3Object s3Object = amazonS3Client.getObject(bucket, img);
-        String contentType = s3Object.getObjectMetadata().getContentType();
-        S3ObjectInputStream stream = s3Object.getObjectContent();
-
-        byte[] imageBytes;
+        S3ObjectInputStream stream = null; // 여기서 stream 선언
         try {
-            imageBytes = IOUtils.toByteArray(stream);
+            String img = "img/" + vote_id + "-" + candidate_id;
+            S3Object s3Object = amazonS3Client.getObject(bucket, img);
+            String contentType = s3Object.getObjectMetadata().getContentType();
+            stream = s3Object.getObjectContent();
+
+            byte[] imageBytes = IOUtils.toByteArray(stream);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType)) // 이미지 타입에 따라 변경 (JPEG, PNG 등)
+                    .body(imageBytes);
         } catch (IOException e) {
             // 에러 처리
             e.printStackTrace();
-            throw new CustomException(614,"이미지 서버 에러");
+            throw new CustomException(614, "이미지 서버 에러");
+        } catch (AmazonS3Exception e) {
+            throw new CustomException(688, e + ":사진이 존재하지 않음");
         } finally {
-            IOUtils.closeQuietly(stream); // 스트림 닫기
+            if (stream != null) {
+                IOUtils.closeQuietly(stream); // 스트림 닫기
+            }
         }
-
-
-        // 이미지 바이트 배열을 Response로 반환
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType)) // 이미지 타입에 따라 변경 (JPEG, PNG 등)
-                .body(imageBytes);
     }
+
     public void UpdateImage(MultipartFile file, String vote_id, String candidate_id) throws IOException, CustomException {
         if (!file.isEmpty()) {
             try {
