@@ -124,8 +124,10 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
     @PutMapping("/candidate/{vote_id}/{candidate_id}")
-    public String CandidateModify(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id){
-        return "ok";
+    public ResponseEntity<ResponseDTO.CandidateDTO> CandidateModify(@RequestBody RequestDTO.CandidateDTO requestCandidateDTO,
+                                                                    @PathVariable String vote_id, @PathVariable String candidate_id) throws CustomException {
+        ResponseDTO.CandidateDTO responseCandidateDTO = candidateService.ModifyCandidate(requestCandidateDTO, vote_id, candidate_id);
+        return ResponseEntity.ok(responseCandidateDTO);
     }
     @GetMapping("/candidate/student")
     public List<ResponseDTO.StudentDTO> StudentList(){

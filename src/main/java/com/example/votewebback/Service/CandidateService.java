@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 
 import com.example.votewebback.CustomException;
+import jakarta.transaction.Transactional;
 import org.apache.commons.io.IOUtils;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -77,6 +77,20 @@ public class CandidateService {
     public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String candidate_id){
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote, candidate_id).get();
+        ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
+        return responseCandidateDTO;
+    }
+    @Transactional
+    public ResponseDTO.CandidateDTO
+    ModifyCandidate(RequestDTO.CandidateDTO requestCandidateDTO, String vote_id, String candidate_id) throws CustomException {
+        CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(voteRepository.findByVoteid(vote_id).get(), candidate_id)
+                .orElseThrow(() -> new CustomException(711, "존재하지 않는 후보입니다.투표 id와 후보 id를 확인해주세요.") )
+                .toBuilder()
+                .candidatespec(requestCandidateDTO.getCandidate_spec())
+                .candidatepromise(requestCandidateDTO.getCandidate_promise())
+                .build();
+        candidateRepository.save(candidate);
+
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
         return responseCandidateDTO;
     }
@@ -175,7 +189,6 @@ public class CandidateService {
             }
         } else throw new CustomException(613,"이미지 없음");
     }
-
     public ResponseDTO.StudentDTO IsPeopleVote(RequestDTO.CandidateDTO requestCandidateDTO) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(requestCandidateDTO.getVote_id()).get();
 
@@ -186,7 +199,6 @@ public class CandidateService {
         }
         else return null;
     }
-
     public void DeleteCandidate(String vote_id, String candidate_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote,candidate_id).orElseThrow(()->
