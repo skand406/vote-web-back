@@ -5,6 +5,7 @@ import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Service.*;
 import com.example.votewebback.security.JwtService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ public class MemberController {
     private final ElectorService electorService;
     private final CandidateService candidateService;
     private final StudentService studentService;
+    private final EmailService emailService;
 
     //유저 관련
     @GetMapping("/user/{user_id}")
@@ -133,12 +135,14 @@ public class MemberController {
 
     //카카오톡 관련
     @GetMapping("/message/URL/{vote_id}")
-    public String UserSendURL(@PathVariable("vote_id") String vote_id){
-        return "ok";
+    public ResponseEntity<String> UserSendURL(@PathVariable("vote_id") String vote_id) throws MessagingException {
+        userService.SendVoteUrl(vote_id);
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/message/result/{vote_id}")
-    public String UserSendResult(@PathVariable("vote_id") String vote_id){
-        return "ok";
+    public ResponseEntity<String> UserSendResult(@PathVariable("vote_id") String vote_id) throws MessagingException, CustomException {
+        userService.SendVoteResult(vote_id);
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -4,8 +4,8 @@ import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.*;
 import com.example.votewebback.Entity.*;
 import com.example.votewebback.RandomCode;
-import com.example.votewebback.Repository.UserRepository;
-import com.example.votewebback.Repository.VoteRepository;
+import com.example.votewebback.Repository.*;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +24,8 @@ public class UserService {
     private final RedisService redisService;
     private final VoteRepository voteRepository;
     private final VoteService voteService;
+    private final ElectorRepository electorRepository;
+    private final StudentRepository studentRepository;
 
     public UserEntity CreateUser(RequestDTO.UserDTO userDTO){
         UserEntity user = UserEntity.builder()
@@ -99,5 +101,27 @@ public class UserService {
         for(VoteEntity v:voteList){
             voteService.DeleteVote(v.getVoteid());
         }
+    }
+    public void SendVoteUrl(String vote_id) throws MessagingException {
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        List<ElectorEntity> electorList = electorRepository.findByVoteid(vote);
+
+        for(ElectorEntity e:electorList){
+            StudentEntity student = studentRepository.findByStudentid(e.getStudentid().getStudentid()).get();
+            emailService.sendVoteMail(vote_id,student.getStudentemail());
+
+            //System.out.println(student.getStudentemail());
+        }
+
+    }
+    public void SendVoteResult(String vote_id) throws MessagingException, CustomException {
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        List<ElectorEntity> electorList = electorRepository.findByVoteid(vote);
+        for(ElectorEntity e:electorList){
+            StudentEntity student = studentRepository.findByStudentid(e.getStudentid().getStudentid()).get();
+            emailService.sendVoteResultMail(vote_id,student.getStudentemail());
+            //System.out.println(student.getStudentemail());
+        }
+
     }
 }
