@@ -74,7 +74,7 @@ public class CandidateService {
         return responseCandidateDTO;
 
     }
-    public ResponseDTO.CandidateDTO SearchCandidate(String vote_id, String candidate_id){
+    public ResponseDTO.CandidateDTO ReadCandidate(String vote_id, String candidate_id){
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote, candidate_id).get();
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);

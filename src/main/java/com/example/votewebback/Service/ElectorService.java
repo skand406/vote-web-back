@@ -1,6 +1,5 @@
 package com.example.votewebback.Service;
 
-import com.example.votewebback.CustomException;
 import com.example.votewebback.Entity.ElectorEntity;
 import com.example.votewebback.Entity.StudentEntity;
 import com.example.votewebback.Entity.VoteEntity;
@@ -68,19 +67,11 @@ public class ElectorService {
         else return "권한이 없는 유권자입니다.";
     }
 
-    public void DeleteElector(String vote_id, StudentEntity student_id) throws CustomException {
+    public void DeleteElector(String vote_id, StudentEntity student_id) {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote,student_id).orElseThrow(()->
-                new CustomException(700,"없는 유권자"+student_id));
+                new IllformedLocaleException("없는 유권자"+student_id));
         electorRepository.delete(elector);
 
     }
 }
-
-
-//- 대상자 추가 필요(학생 리스트 ← 학년, 전공 등 조건으로 권한 부여 대상 추리기)
-//        - ElectorService : CreateElector 필요
-//        - 투표 대상자 확인하는 함수
-//        - 컨트롤러에서 createVote 함수와 함께 사용
-//
-//        - 버전1의 UserService : 대상자 비교(create_user 참고)
