@@ -44,12 +44,7 @@ public class PublicController {
         List<ResponseDTO.VoteDTO> voteDTOList = voteService.ReadVoteBundleList(vote_bundle_id);
         return voteDTOList;
     }
-    @GetMapping("/vote/result/{vote_id}")
-    public String VoteResult(@PathVariable("vote_id") String vote_id){
-        List<CandidateEntity> electedCandidateList = candidateService.ReadCandidateCount(vote_id);
-        //electorService.ReadParticipationRate(vote_id);
-        return "ok";
-    }
+
 
     @PutMapping("/vote/{vote_id}")
     public ResponseEntity<String> Vote(@PathVariable("vote_id") String vote_id,@RequestBody Map<String,List<String>> id) throws CustomException {

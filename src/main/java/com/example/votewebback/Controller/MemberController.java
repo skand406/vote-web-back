@@ -3,6 +3,7 @@ package com.example.votewebback.Controller;
 import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
+import com.example.votewebback.Entity.CandidateEntity;
 import com.example.votewebback.Service.*;
 import com.example.votewebback.security.JwtService;
 import jakarta.mail.MessagingException;
@@ -85,7 +86,20 @@ public class MemberController {
         voteService.DeleteVote(vote_id);
         return ResponseEntity.ok().build();
     }
-
+    @GetMapping("/vote/result/{vote_id}")
+    public ResponseEntity<Map<String, Object>> VoteResult(@PathVariable("vote_id") String vote_id) throws CustomException {
+        List<CandidateEntity> electedCandidateList = candidateService.ReadCandidateCount(vote_id);
+        if(electedCandidateList.size()==0){
+            throw new CustomException(600,"후보 없음");
+        }
+        Map<String,Object> result = electorService.ReadParticipationRate(vote_id);
+        Map<String,Integer> candidate  = new HashMap<>();
+        for(CandidateEntity c: electedCandidateList){
+            candidate.put(c.getCandidateid(),c.getCandidatecounter());
+        }
+        result.put("candidate",candidate);
+        return ResponseEntity.ok(result);
+    }
     //후보 관련
     @PostMapping("/candidate/register")
     public ResponseEntity<Map<String,Object>> CandidateAdd(@RequestBody List<RequestDTO.CandidateDTO> requestCandidateDTOList) throws CustomException {
