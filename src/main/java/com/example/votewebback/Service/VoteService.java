@@ -46,6 +46,7 @@ public class VoteService {
                     .grade(requestVoteDTO.getGrade())
                     .votename(requestVoteDTO.getVote_name())
                     .votetype(requestVoteDTO.getVote_type())
+                    .voteactive(true)
                     .userid(user)
                     .build();
             voteRepository.save(vote);
