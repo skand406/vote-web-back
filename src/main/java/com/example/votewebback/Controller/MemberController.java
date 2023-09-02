@@ -78,7 +78,7 @@ public class MemberController {
     }
     @PutMapping("/vote/{vote_id}")
     public ResponseEntity<ResponseDTO.VoteDTO> VoteModify(@PathVariable("vote_id") String vote_id, @RequestBody RequestDTO.VoteDTO voteDTO) throws CustomException{
-        ResponseDTO.VoteDTO responseVoteDTO = voteService.ModifyVote(vote_id, voteDTO);
+        ResponseDTO.VoteDTO responseVoteDTO = voteService.UpdateVote(vote_id, voteDTO);
         return ResponseEntity.ok(responseVoteDTO);
     }
     @DeleteMapping("/vote/{vote_id}")
