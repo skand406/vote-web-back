@@ -115,7 +115,7 @@ public class VoteService {
     }
 
     @Transactional
-    public ResponseDTO.VoteDTO ModifyVote(String vote_id, RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
+    public ResponseDTO.VoteDTO UpdateVote(String vote_id, RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
 
 
