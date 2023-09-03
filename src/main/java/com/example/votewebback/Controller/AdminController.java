@@ -4,9 +4,8 @@ import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Service.UserService;
 import com.example.votewebback.Service.VoteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
@@ -26,5 +25,10 @@ public class AdminController {
     public List<ResponseDTO.VoteDTO> VoteList(){
         List<ResponseDTO.VoteDTO> voteDTOList=voteService.ReadVoteList();
         return voteDTOList;
+    }
+    @PutMapping("/active/{vote_id}")
+    public ResponseEntity<String> VoteModify(@PathVariable("vote_id") String vote_id){
+        voteService.UpdateVoteActive(vote_id);
+        return ResponseEntity.ok().build();
     }
 }

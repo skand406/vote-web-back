@@ -21,6 +21,7 @@ public class ResponseDTO {
         private int grade;
         private String major;
         private String user_id;
+        private boolean vote_active;
 
         public VoteDTO(VoteEntity vote) {
             this.vote_id = vote.getVoteid();
@@ -34,6 +35,7 @@ public class ResponseDTO {
             this.major = vote.getMajor();
             UserEntity user = vote.getUserid();
             this.user_id = user.getUserid();
+            this.vote_active = vote.isVoteactive();
         }
     }
 
