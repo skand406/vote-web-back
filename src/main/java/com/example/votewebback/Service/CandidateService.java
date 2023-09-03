@@ -82,8 +82,7 @@ public class CandidateService {
         return responseCandidateDTO;
     }
     @Transactional
-    public ResponseDTO.CandidateDTO
-    ModifyCandidate(RequestDTO.CandidateDTO requestCandidateDTO, String vote_id, String candidate_id) throws CustomException {
+    public ResponseDTO.CandidateDTO UpdateCandidate(RequestDTO.CandidateDTO requestCandidateDTO, String vote_id, String candidate_id) throws CustomException {
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(voteRepository.findByVoteid(vote_id).get(), candidate_id)
                 .orElseThrow(() -> new CustomException(711, "존재하지 않는 후보입니다.투표 id와 후보 id를 확인해주세요.") )
                 .toBuilder()

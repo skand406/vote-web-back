@@ -5,12 +5,7 @@ import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
 import com.example.votewebback.Entity.CandidateEntity;
 import com.example.votewebback.Service.*;
-import com.example.votewebback.security.JwtService;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -142,7 +137,7 @@ public class MemberController {
     @PutMapping("/candidate/{vote_id}/{candidate_id}")
     public ResponseEntity<ResponseDTO.CandidateDTO> CandidateModify(@RequestBody RequestDTO.CandidateDTO requestCandidateDTO,
                                                                     @PathVariable String vote_id, @PathVariable String candidate_id) throws CustomException {
-        ResponseDTO.CandidateDTO responseCandidateDTO = candidateService.ModifyCandidate(requestCandidateDTO, vote_id, candidate_id);
+        ResponseDTO.CandidateDTO responseCandidateDTO = candidateService.UpdateCandidate(requestCandidateDTO, vote_id, candidate_id);
         return ResponseEntity.ok(responseCandidateDTO);
     }
     @GetMapping("/candidate/student")
