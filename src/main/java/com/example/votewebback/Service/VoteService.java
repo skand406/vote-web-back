@@ -99,7 +99,9 @@ public class VoteService {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         StudentEntity student = studentRepository.findByStudentid(student_id).get();
         ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote, student).get();
-
+        if(!vote.isVoteactive()){
+            throw new CustomException(673,"사용할 수 없는 투표");
+        }
         List<String> candidateList = candidate_id_list;
 
         if (!elector.isVoteconfirm()) {
@@ -164,5 +166,13 @@ public class VoteService {
             electorService.DeleteElector(vote_id, e.getStudentid());
         }
 
+    }
+    @Transactional
+    public void UpdateVoteActive(String vote_id) {
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        vote = vote.toBuilder()
+                .voteactive(!vote.isVoteactive())
+                .build();
+        voteRepository.save(vote);
     }
 }

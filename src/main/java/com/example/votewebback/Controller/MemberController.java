@@ -89,8 +89,8 @@ public class MemberController {
     @GetMapping("/vote/result/{vote_id}")
     public ResponseEntity<Map<String, Object>> VoteResult(@PathVariable("vote_id") String vote_id) throws CustomException {
         List<CandidateEntity> electedCandidateList = candidateService.ReadCandidateCount(vote_id);
-        if(electedCandidateList.size()==0){
-            throw new CustomException(600,"후보 없음");
+        if(electedCandidateList.size()==0 ){
+            throw new CustomException(660,"선출된 후보 없음");
         }
         Map<String,Object> result = electorService.ReadParticipationRate(vote_id);
         Map<String,Integer> candidate  = new HashMap<>();

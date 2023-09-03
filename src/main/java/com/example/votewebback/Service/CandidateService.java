@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.example.votewebback.Entity.VoteType.PEOPLE;
@@ -209,8 +210,13 @@ public class CandidateService {
         amazonS3Client.deleteObject(bucket, fileNameToDelete);
     }
 
-    public List<CandidateEntity> ReadCandidateCount(String vote_id){
+    public List<CandidateEntity> ReadCandidateCount(String vote_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        if(vote.getEnddate().isBefore(LocalDate.now())){
+            throw new CustomException(661,"종료되지 않은 투표");
+        } else if (!vote.isVoteactive()) {
+            throw new CustomException(673,"사용할 수 없는 투표");
+        }
         List<CandidateEntity> candidateList = candidateRepository.findByVoteid(vote);
         candidateList.sort(Comparator.comparing(CandidateEntity::getCandidatecounter).reversed());
         List<CandidateEntity> electedCandidateList = new ArrayList<>();
