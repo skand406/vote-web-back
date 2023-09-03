@@ -139,8 +139,9 @@ public class VoteService {
         }
         else if (startDateRequest.isBefore(LocalDate.now()) || endDateRequest.isBefore(startDateRequest)){
             throw new CustomException(672, "시작일 및 종료일을 다시 입력하세요.");
-        }
-        else {
+        } else if (!vote.isVoteactive()) {
+            throw new CustomException(673,"사용할 수 없는 투표");
+        } else {
             vote = vote.toBuilder()
                     .votename(requestVoteDTO.getVote_name())
                     .startdate(requestVoteDTO.getStart_date())

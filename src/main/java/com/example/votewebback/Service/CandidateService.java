@@ -83,6 +83,10 @@ public class CandidateService {
     }
     @Transactional
     public ResponseDTO.CandidateDTO UpdateCandidate(RequestDTO.CandidateDTO requestCandidateDTO, String vote_id, String candidate_id) throws CustomException {
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        if(!vote.isVoteactive()){
+            throw new CustomException(673,"사용할 수 없는 투표");
+        }
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(voteRepository.findByVoteid(vote_id).get(), candidate_id)
                 .orElseThrow(() -> new CustomException(711, "존재하지 않는 후보입니다.투표 id와 후보 id를 확인해주세요.") )
                 .toBuilder()
@@ -156,6 +160,10 @@ public class CandidateService {
     }
 
     public void UpdateImage(MultipartFile file, String vote_id, String candidate_id) throws IOException, CustomException {
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        if(!vote.isVoteactive()){
+            throw new CustomException(673,"사용할 수 없는 투표");
+        }
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
