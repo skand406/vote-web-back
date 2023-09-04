@@ -33,6 +33,7 @@ public class UserService {
                 .userid(userDTO.getUser_id())
                 .username(userDTO.getUser_name())
                 .usertel(userDTO.getUser_tel())
+                .role(userDTO.getRole())
                 .userpassword(passwordEncoder.encode(userDTO.getUser_password()))
                 .build();
         userRepository.save(user);

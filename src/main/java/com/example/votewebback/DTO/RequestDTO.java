@@ -35,6 +35,7 @@ public class RequestDTO {
         private String user_email;
         private String user_id;
         private String user_password;
+        private String role;
     }
     @Getter
     public static class CandidateDTO {
