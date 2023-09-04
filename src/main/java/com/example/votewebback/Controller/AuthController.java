@@ -73,9 +73,15 @@ public class AuthController {
     @PostMapping("/email")
     public ResponseEntity<String> AuthEmail(@RequestBody Map<String,String> code) throws CustomException {
         String authCode=code.get("code");
+        String vote_id = code.get("vote_id");
+        String student_id = code.get("student_id");
+        if(vote_id == null && student_id == null){
+            return ResponseEntity.ok().build();
+        }
         if(redisService.getData(authCode)==null) {
             throw new CustomException(640,"인증 실패");
         }
+        electorService.UpdateEmailConfirm(vote_id,student_id);
         return ResponseEntity.ok().build();
     }
     @PostMapping("/email-checker")

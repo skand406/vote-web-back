@@ -7,6 +7,7 @@ import com.example.votewebback.RandomCode;
 import com.example.votewebback.Repository.ElectorRepository;
 import com.example.votewebback.Repository.StudentRepository;
 import com.example.votewebback.Repository.VoteRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,22 +50,41 @@ public class ElectorService {
                 electorRepository.save(elector);
             }
     }
+    @Transactional
     public String CheckElectorAuthority(String  vote_id, String student_id, String email){
         VoteEntity vote=voteRepository.findByVoteid(vote_id).get();
         StudentEntity student=studentRepository.findByStudentid(student_id).get();
         Optional<ElectorEntity> elector = electorRepository.findByVoteidAndStudentid(vote,student);
+
         if(!elector.isEmpty()){
             if(email.equals(student.getStudentemail())){
                 String code = RandomCode.randomCode();
                 System.out.println(code); //나중에 수정 이메일 들어가기 싫어서 작성함
-                redisService.setDataExpire(code, email, 60 * 5L);
+                ElectorEntity elector1 = elector.get();
+                elector1= elector1.toBuilder()
+                                .emailconfirm(code)
+                                        .build();
+                electorRepository.save(elector1);
+
+                redisService.setDataExpire(code, email, 1000* 60 * 5L);
                 return emailService.sendMail(email,code,"elector");
             }
             else return "이메일이 일치하지 않습니다.";
         }
         else return "권한이 없는 유권자입니다.";
     }
+    @Transactional
+    public void UpdateEmailConfirm(String vote_id,String student_id){
+        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        StudentEntity student = studentRepository.findByStudentid(student_id).get();
+        ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote,student).get();
+        elector = elector.toBuilder()
+                .emailconfirm("T")
+                .build();
+        electorRepository.save(elector);
 
+
+    }
     public void DeleteElector(String vote_id, StudentEntity student_id) {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         ElectorEntity elector = electorRepository.findByVoteidAndStudentid(vote,student_id).orElseThrow(()->
