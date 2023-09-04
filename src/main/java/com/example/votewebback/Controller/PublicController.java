@@ -47,9 +47,9 @@ public class PublicController {
 
 
     @PutMapping("/vote/{vote_id}")
-    public ResponseEntity<String> Vote(@PathVariable("vote_id") String vote_id,@RequestBody Map<String,List<String>> id) throws CustomException {
-        List<String> candidate_id_list = id.get("candidate_id");
-        String student_id = id.get("student_id").toString();
+    public ResponseEntity<String> Vote(@PathVariable("vote_id") String vote_id,@RequestBody Map<String,List<String>> candidateid,@RequestBody Map<String,String> studentid) throws CustomException {
+        List<String> candidate_id_list = candidateid.get("candidate_id");
+        String student_id = studentid.get("student_id").toString();
         voteService.SumitVote(candidate_id_list,student_id,vote_id);
         return ResponseEntity.ok().build();
     }
