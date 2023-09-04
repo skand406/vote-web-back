@@ -87,7 +87,7 @@ public class UserService {
             throw new CustomException(650,"이미 가입된 이메일 " +user_email);
         }
         String code = RandomCode.randomCode();
-        redisService.setDataExpire(code, user_email, 60 * 5L);
+        redisService.setDataExpire(code, user_email, 1000 * 60 * 5);
         emailService.sendMail(user_email, code,"email");
     }
     public void DeleteUser(String user_id) throws CustomException {
