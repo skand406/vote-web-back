@@ -42,7 +42,7 @@ public class MemberController {
             throw new CustomException(700,"사용할 수 없는 유저 id : " + user_id);
         }
     }
-    @PutMapping("/user/{user_id}")
+    @PutMapping("/personal/user/{user_id}")
     public ResponseEntity<ResponseDTO.UserDTO> UserModify(@PathVariable("user_id") String user_id, @RequestBody RequestDTO.UserDTO userDTO) throws CustomException {
         ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userService.UpdateUserPersonalInfo(user_id, userDTO));
         return ResponseEntity.ok(responseUserDTO);
@@ -59,7 +59,7 @@ public class MemberController {
     }
 
     //투표 관련
-    @PostMapping("/vote/register")
+    @PostMapping("/personal/vote/register")
     public ResponseDTO.VoteDTO VoteAdd(@RequestBody RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
         ResponseDTO.VoteDTO responseVoteDTO = voteService.CreateVote(requestVoteDTO);
         //request에 vote_id 없어서 response 활용
@@ -94,6 +94,11 @@ public class MemberController {
         }
         result.put("candidate",candidate);
         return ResponseEntity.ok(result);
+    }
+    @PutMapping("/active/{vote_id}")
+    public ResponseEntity<String> VoteStatusModify(@PathVariable("vote_id") String vote_id){
+        voteService.UpdateVoteActive(vote_id);
+        return ResponseEntity.ok().build();
     }
     //후보 관련
     @PostMapping("/candidate/register")

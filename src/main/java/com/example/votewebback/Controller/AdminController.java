@@ -26,9 +26,5 @@ public class AdminController {
         List<ResponseDTO.VoteDTO> voteDTOList=voteService.ReadVoteList();
         return voteDTOList;
     }
-    @PutMapping("/active/{vote_id}")
-    public ResponseEntity<String> VoteModify(@PathVariable("vote_id") String vote_id){
-        voteService.UpdateVoteActive(vote_id);
-        return ResponseEntity.ok().build();
-    }
+
 }
