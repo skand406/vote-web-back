@@ -28,12 +28,17 @@ public class UserService {
     private final StudentRepository studentRepository;
 
     public UserEntity CreateUser(RequestDTO.UserDTO userDTO){
+       /* String role = userDTO.getRole();
+        if(!role.equals("admin")){
+            role="member";
+        }*/
+        //System.out.println(userDTO.isUserisAdmin());
         UserEntity user = UserEntity.builder()
                 .useremail(userDTO.getUser_email())
                 .userid(userDTO.getUser_id())
                 .username(userDTO.getUser_name())
                 .usertel(userDTO.getUser_tel())
-                .role(userDTO.getRole())
+                //.isAdmin(userDTO.isUserisAdmin())
                 .userpassword(passwordEncoder.encode(userDTO.getUser_password()))
                 .build();
         userRepository.save(user);

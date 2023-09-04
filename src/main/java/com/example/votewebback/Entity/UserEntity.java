@@ -28,18 +28,19 @@ public class UserEntity implements UserDetails{
     private String usertel;
     @Column(name="user_email",unique = true)
     private String useremail;
-    @Column(name="role")
-    private String role;
+    /*@Column(name="role")
+    private boolean isAdmin;*/
 
     @Override //권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
-        if (role.equals("admin")) {
+        /*System.out.println("role: "+this.isAdmin);
+        if (this.isAdmin) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         } else {
             authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
-        }
+        }*/
         return authorities;
     } // 모두 user 권한 생성
 
