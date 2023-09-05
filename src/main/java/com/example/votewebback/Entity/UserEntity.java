@@ -39,7 +39,7 @@ public class UserEntity implements UserDetails{
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         } else {
             authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
-        }*/
+        }
         return authorities;
     } // 모두 user 권한 생성
 
