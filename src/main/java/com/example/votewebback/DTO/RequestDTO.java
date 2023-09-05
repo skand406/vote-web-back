@@ -35,7 +35,7 @@ public class RequestDTO {
         private String user_email;
         private String user_id;
         private String user_password;
-       // private boolean userisAdmin;
+        private String role;
     }
     @Getter
     public static class CandidateDTO {

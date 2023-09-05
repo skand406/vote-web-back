@@ -54,11 +54,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO.LoginDTO> login(@RequestBody RequestDTO.LoginDTO requestLoginDTO){
-        UserEntity user = UserEntity.builder()
-                .userid(requestLoginDTO.user_id())
-                .userpassword(requestLoginDTO.user_password())
-                .build();
-        return ResponseEntity.ok(authService.authenticate(user));
+
+        return ResponseEntity.ok(authService.authenticate(requestLoginDTO));
     }
 
     @PostMapping("/elector/{vote_id}/{student_id}")
