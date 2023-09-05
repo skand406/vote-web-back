@@ -89,9 +89,11 @@ public class UserService {
     }
     @Transactional
     public void UpdateUserPW(String user_id,String pw) throws CustomException {
-        UserEntity user = userRepository.findByUserid(user_id).orElseThrow(()->
-                new CustomException(700,"없는 유저"+user_id));
-        user.setUserpassword(passwordEncoder.encode(pw));
+        if(pw!=null) {
+            UserEntity user = userRepository.findByUserid(user_id).orElseThrow(() ->
+                    new CustomException(700, "없는 유저" + user_id));
+            user.setUserpassword(passwordEncoder.encode(pw));
+        }
     }
 
     public void CheckUserEmail(String user_email) throws CustomException {

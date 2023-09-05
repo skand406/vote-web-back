@@ -43,8 +43,9 @@ public class MemberController {
         }
     }
     @PutMapping("/personal/user/{user_id}")
-    public ResponseEntity<ResponseDTO.UserDTO> UserModify(@PathVariable("user_id") String user_id, @RequestBody RequestDTO.LoginDTO requestLoginDTO, @RequestBody RequestDTO.UserDTO userDTO) throws CustomException {
-        userService.UpdateUserPW(user_id,requestLoginDTO.user_password());
+    public ResponseEntity<ResponseDTO.UserDTO> UserModify(@PathVariable("user_id") String user_id,@RequestBody RequestDTO.UserDTO userDTO) throws CustomException {
+
+        userService.UpdateUserPW(user_id,userDTO.getUser_password());
         ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userService.UpdateUserPersonalInfo(user_id, userDTO));
         return ResponseEntity.ok(responseUserDTO);
     }
