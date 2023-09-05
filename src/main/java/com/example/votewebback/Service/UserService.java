@@ -77,7 +77,7 @@ public class UserService {
         }
     }
     @Transactional
-    public void UpdateUserPW(String user_id,String user_email) throws CustomException {
+    public void UpdateResetUserPW(String user_id, String user_email) throws CustomException {
         UserEntity user=userRepository.findByUserid(user_id).orElseThrow(()->
                 new CustomException(700,"없는 유저"+user_id));
         if(!user.getUseremail().equals(user_email)){
@@ -87,6 +87,13 @@ public class UserService {
         user.setUserpassword(passwordEncoder.encode(temPW));
         emailService.sendMail(user_email,temPW,"pw");
     }
+    @Transactional
+    public void UpdateUserPW(String user_id,String pw) throws CustomException {
+        UserEntity user = userRepository.findByUserid(user_id).orElseThrow(()->
+                new CustomException(700,"없는 유저"+user_id));
+        user.setUserpassword(passwordEncoder.encode(pw));
+    }
+
     public void CheckUserEmail(String user_email) throws CustomException {
         if(!userRepository.findByUseremail(user_email).isEmpty()) {
             throw new CustomException(650,"이미 가입된 이메일 " +user_email);

@@ -3,17 +3,14 @@ package com.example.votewebback.Controller;
 import com.example.votewebback.CustomException;
 import com.example.votewebback.DTO.RequestDTO;
 import com.example.votewebback.DTO.ResponseDTO;
-import com.example.votewebback.Entity.CandidateEntity;
 import com.example.votewebback.Service.CandidateService;
 import com.example.votewebback.Service.ElectorService;
 import com.example.votewebback.Service.UserService;
 import com.example.votewebback.Service.VoteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @RestController
@@ -34,7 +31,7 @@ public class PublicController {
     public ResponseEntity<String> UserResetPW(@RequestBody Map<String,String> user) throws CustomException {
         String user_id = user.get("user_id");
         String user_email = user.get("user_email");
-        userService.UpdateUserPW(user_id,user_email);
+        userService.UpdateResetUserPW(user_id,user_email);
         return ResponseEntity.ok().build();
     }
 
