@@ -77,10 +77,10 @@ public class AuthController {
             throw new CustomException(640,"인증 실패");
         }
         if(vote_id == null && student_id == null){
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("투표하기전에 인증 ");
         }else {
             electorService.UpdateEmailConfirm(vote_id, student_id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("그외 다른 인증");
         }
     }
     @PostMapping("/email-checker")
