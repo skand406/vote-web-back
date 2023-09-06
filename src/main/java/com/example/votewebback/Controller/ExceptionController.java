@@ -14,7 +14,7 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex) {
         Map<String, Object> response = new HashMap<>();
-        response.put("error", "Exception");
+        response.put("error", ex.getClass().getSimpleName());
         response.put("message", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
