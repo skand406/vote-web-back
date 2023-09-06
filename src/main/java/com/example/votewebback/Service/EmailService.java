@@ -50,10 +50,10 @@ public class EmailService {
         emailSender.send(message);
         return "전송완료";
     }
-    public String sendVoteMail(String vote_id, String userEmail) throws MessagingException {
+    public String sendVoteMail(String vote_bundle_id, String userEmail) throws MessagingException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         MimeMessageHelper mail = new MimeMessageHelper(mimeMessage, "utf-8");
-        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+        VoteEntity vote = voteRepository.findByVotebundleid(vote_bundle_id).get(0);
 
         mail.setFrom("webmaster.chlxx00@gmail.com");//보내는 사람
         mail.setTo(userEmail);//받는 사람
@@ -62,9 +62,9 @@ public class EmailService {
         mail.setSubject("[Vote Web]" + vote.getVotename() + " 투표 링크 안내");
 
         // 여기서 원하는 투표 URL을 설정하세요.
-        String voteUrl = "http://naver.com"; //+ vote_id; // 예시
+        String voteUrl = "http://vote-web.duckdns.org/user"+vote_bundle_id; // 예시
         String htmlMsg = "<h3>투표에 참여해 주세요!</h3><br>"
-                + "<a href='" + voteUrl + "'>여기ㅇㄷ</a>를 클릭하여 투표에 참여하세요.";
+                + "<a href='" + voteUrl + "'>"+voteUrl+"</a> 투표 링크를 클릭하여 투표에 참여하세요.";
 
         mail.setText(htmlMsg, true);
 
@@ -108,19 +108,21 @@ public class EmailService {
             mail.setSubject("[Vote Web]" + vote.getVotename() + " 투표 결과 안내");
 
             // HTML 본문
-            String htmlMsg = "<table border='1'>"
+            String htmlMsg = "<table border='1' style='width: 300px;'>"
                     + "<thead>"
                     + "    <tr>"
-                    + "        <th><img src='cid:image' alt='이미지 아이콘' width='50'> </th>"
-                    + "        <th>spec</th>"
+                    + "        <th style='width: 100px;'><img src='cid:image' alt='이미지 아이콘' width='50'> </th>"
+                    + "        <th style='width: 200px;'>spec</th>"
                     + "    </tr>"
                     + "</thead>"
                     + "<tbody>"
                     + "    <tr>"
-                    + "        <td>promise</td>"
+                    + "        <td style='width: 100px;'>promise</td>"
+                    + "        <td style='width: 200px;'></td>"
                     + "    </tr>"
                     + "</tbody>"
                     + "</table>";
+
 
             htmlMsg = htmlMsg.replace("spec", spec).replace("promise", promise);
             msg+=htmlMsg;

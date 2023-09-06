@@ -113,13 +113,12 @@ public class UserService {
             voteService.DeleteVote(v.getVoteid());
         }
     }
-    public void SendVoteUrl(String vote_id) throws MessagingException {
-        VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
+    public void SendVoteUrl(String vote_bundle_id) throws MessagingException {
+        VoteEntity vote = voteRepository.findByVotebundleid(vote_bundle_id).get(0);
         List<ElectorEntity> electorList = electorRepository.findByVoteid(vote);
-
-        for(ElectorEntity e:electorList){
+        for (ElectorEntity e : electorList) {
             StudentEntity student = studentRepository.findByStudentid(e.getStudentid().getStudentid()).get();
-            emailService.sendVoteMail(vote_id,student.getStudentemail());
+            emailService.sendVoteMail(vote_bundle_id, student.getStudentemail());
 
             //System.out.println(student.getStudentemail());
         }

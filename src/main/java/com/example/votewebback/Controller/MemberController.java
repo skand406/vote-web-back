@@ -154,9 +154,9 @@ public class MemberController {
     }
 
     //카카오톡 관련
-    @GetMapping("/message/URL/{vote_id}")
-    public ResponseEntity<String> UserSendURL(@PathVariable("vote_id") String vote_id) throws MessagingException {
-        userService.SendVoteUrl(vote_id);
+    @GetMapping("/message/URL/{vote_bundle_id}")
+    public ResponseEntity<String> UserSendURL(@PathVariable("vote_bundle_id") String vote_bundle_id) throws MessagingException {
+        userService.SendVoteUrl(vote_bundle_id);
         return ResponseEntity.ok().build();
     }
     @GetMapping("/message/result/{vote_id}")
