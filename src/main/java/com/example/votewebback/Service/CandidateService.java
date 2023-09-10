@@ -75,11 +75,18 @@ public class CandidateService {
         return responseCandidateDTO;
 
     }
-    public ResponseDTO.CandidateDTO ReadCandidate(String vote_id, String candidate_id){
+    public Map<String,Object> ReadCandidate(String vote_id, String candidate_id){
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote, candidate_id).get();
+        Map<String,Object>  responseData = new HashMap<>();
+        if(vote.getVotetype()==PEOPLE) {
+            StudentEntity student = studentRepository.findByStudentid(candidate_id).get();
+            ResponseDTO.StudentDTO reponseStudentDTO = new ResponseDTO.StudentDTO(student);
+            responseData.put("student",reponseStudentDTO);
+        }
         ResponseDTO.CandidateDTO responseCandidateDTO = new ResponseDTO.CandidateDTO(candidate);
-        return responseCandidateDTO;
+        responseData.put("candidate",responseCandidateDTO);
+        return responseData;
     }
     @Transactional
     public ResponseDTO.CandidateDTO UpdateCandidate(RequestDTO.CandidateDTO requestCandidateDTO, String vote_id, String candidate_id) throws CustomException {
@@ -216,7 +223,7 @@ public class CandidateService {
         String fileNameToDelete = "img/" + vote_id + "-" + candidate_id;
         amazonS3Client.deleteObject(bucket, fileNameToDelete);
     }
-
+    //당선된 후보 리스트
     public List<CandidateEntity> ReadCandidateCount(String vote_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         if(vote.getEnddate().isBefore(LocalDate.now())){
