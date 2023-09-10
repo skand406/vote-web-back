@@ -62,16 +62,16 @@ public class MemberController {
 
     //투표 관련
     @PostMapping("/personal/vote/register")
-    public ResponseDTO.VoteDTO VoteAdd(@RequestBody RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
+    public ResponseEntity<ResponseDTO.VoteDTO> VoteAdd(@RequestBody RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
         ResponseDTO.VoteDTO responseVoteDTO = voteService.CreateVote(requestVoteDTO);
         //request에 vote_id 없어서 response 활용
         electorService.CreateElector(requestVoteDTO.getMajor(), requestVoteDTO.getGrade(), responseVoteDTO.getVote_id());
-        return responseVoteDTO;
+        return ResponseEntity.ok(responseVoteDTO);
     }
     @GetMapping("/vote/{user_id}") //유저 id로 투표 리스트 찾기
-    public List<ResponseDTO.VoteDTO> VoteListByUser(@PathVariable("user_id") String user_id){
+    public ResponseEntity<List<ResponseDTO.VoteDTO>> VoteListByUser(@PathVariable("user_id") String user_id){
         List<ResponseDTO.VoteDTO> responseVoteList = voteService.ReadVoteListByUserId(user_id);
-        return responseVoteList;
+        return ResponseEntity.ok(responseVoteList);
     }
     @PutMapping("/vote/{vote_id}")
     public ResponseEntity<ResponseDTO.VoteDTO> VoteModify(@PathVariable("vote_id") String vote_id, @RequestBody RequestDTO.VoteDTO voteDTO) throws CustomException{
@@ -148,9 +148,9 @@ public class MemberController {
         return ResponseEntity.ok(responseCandidateDTO);
     }
     @GetMapping("/candidate/student")
-    public List<ResponseDTO.StudentDTO> StudentList(){
+    public ResponseEntity<List<ResponseDTO.StudentDTO>> StudentList(){
         List<ResponseDTO.StudentDTO> responseStudentList = studentService.ReadStudentList();
-        return responseStudentList;
+        return ResponseEntity.ok(responseStudentList);
     }
 
     //카카오톡 관련

@@ -37,9 +37,9 @@ public class PublicController {
 
     //투표 관련
     @GetMapping("/vote/{vote_bundle_id}") //투표 번들 id로 투표 리스트 찾기
-    public List<ResponseDTO.VoteDTO> VoteListByBundle(@PathVariable("vote_bundle_id") String vote_bundle_id) throws CustomException {
+    public ResponseEntity<List<ResponseDTO.VoteDTO>> VoteListByBundle(@PathVariable("vote_bundle_id") String vote_bundle_id) throws CustomException {
         List<ResponseDTO.VoteDTO> voteDTOList = voteService.ReadVoteBundleList(vote_bundle_id);
-        return voteDTOList;
+        return ResponseEntity.ok(voteDTOList);
     }
 
 
@@ -63,9 +63,9 @@ public class PublicController {
         return ResponseEntity.ok(candidateService.ReadCandidate(vote_id, candidate_id));
     }
     @GetMapping("candidate/{vote_id}")
-    public List<ResponseDTO.CandidateDTO> CandidateList(@PathVariable("vote_id") String vote_id){
+    public ResponseEntity<List<ResponseDTO.CandidateDTO>> CandidateList(@PathVariable("vote_id") String vote_id){
         List<ResponseDTO.CandidateDTO> responseCandidateList = candidateService.ReadCandidateListByVoteId(vote_id);
-        return responseCandidateList;
+        return ResponseEntity.ok(responseCandidateList);
     }
 
 }

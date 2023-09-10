@@ -16,15 +16,15 @@ public class AdminController {
     private final VoteService voteService;
 
     @GetMapping("/user")
-    public List<ResponseDTO.UserDTO> UserList(){
+    public ResponseEntity<List<ResponseDTO.UserDTO>> UserList(){
         List<ResponseDTO.UserDTO> userDTOList = userService.ReadUserAll();
-        return userDTOList;
+        return ResponseEntity.ok(userDTOList);
     }
 
     @GetMapping("/vote")
-    public List<ResponseDTO.VoteDTO> VoteList(){
+    public ResponseEntity<List<ResponseDTO.VoteDTO>> VoteList(){
         List<ResponseDTO.VoteDTO> voteDTOList=voteService.ReadVoteList();
-        return voteDTOList;
+        return ResponseEntity.ok(voteDTOList);
     }
 
 }

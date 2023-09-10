@@ -57,7 +57,7 @@ public class VoteService {
 
     public List<ResponseDTO.VoteDTO> ReadVoteList() {
         List<VoteEntity> voteList = voteRepository.findAll();
-        System.out.println("voteList = " + voteList);
+        //System.out.println("voteList = " + voteList);
         List<ResponseDTO.VoteDTO> responseVoteList = new ArrayList<>();
 
         for (VoteEntity vote : voteList) {
