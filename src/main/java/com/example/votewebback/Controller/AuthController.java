@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -53,7 +54,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO.LoginDTO> login(@RequestBody RequestDTO.LoginDTO requestLoginDTO){
+    public ResponseEntity<Map<String,Object>> login(@RequestBody RequestDTO.LoginDTO requestLoginDTO){
 
         return ResponseEntity.ok(authService.authenticate(requestLoginDTO));
     }

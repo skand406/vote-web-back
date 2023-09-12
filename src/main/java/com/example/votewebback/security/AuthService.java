@@ -10,6 +10,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -18,7 +21,7 @@ public class AuthService {
     private final RedisService redisService;
     private final UserRepository userRepository;
 
-    public ResponseDTO.LoginDTO authenticate(RequestDTO.LoginDTO requestLoginDTO){
+    public Map<String, Object> authenticate(RequestDTO.LoginDTO requestLoginDTO){
         UserEntity user = userRepository.findByUserid(requestLoginDTO.user_id()).get();
         user = user.toBuilder()
                 .userpassword(requestLoginDTO.user_password())
@@ -32,6 +35,11 @@ public class AuthService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         redisService.setDataExpire(user.getUserid(), refreshToken, 1000 * 60 * 60 * 24 * 3);
-        return new ResponseDTO.LoginDTO(accessToken, refreshToken);
+
+        ResponseDTO.LoginDTO responseLoginDTO = new ResponseDTO.LoginDTO(accessToken, refreshToken);
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("token",responseLoginDTO);
+        responseMap.put("userROLE", user.getRole());
+        return responseMap;
     }
 }
