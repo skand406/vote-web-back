@@ -120,7 +120,6 @@ public class VoteService {
     public ResponseDTO.VoteDTO UpdateVote(String vote_id, RequestDTO.VoteDTO requestVoteDTO) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
 
-
         LocalTime startTime = LocalTime.of(9, 0); // 시작 : 오전 9시 고정
         // 기존 시작일
         LocalDate startDateCurrent = vote.getStartdate();
@@ -131,7 +130,14 @@ public class VoteService {
         LocalDate endDateRequest = requestVoteDTO.getEnd_date();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!vote.getUserid().getUserid().equals(authentication.getName())){
+        String user_id = authentication.getName();
+        UserEntity user = userRepository.findByUserid(user_id).get();
+
+
+        //System.out.println(authentication.getName());
+
+        if (!vote.getUserid().getUserid().equals(user_id)
+                && user.getRole().equals("member")){
             throw new CustomException(700,"사용할 수 없는 유저 id : " + vote.getUserid().getUserid());
         }
         else if (!LocalDateTime.now().isBefore(startDateTimeCurrent)) {
