@@ -53,12 +53,13 @@ public class PublicController {
     }
 
     //후보 관련
-    @GetMapping("candidate/img/{vote_id}/{student_id}")
-    public ResponseEntity<byte[]> CandidateInfoImg(@PathVariable("vote_id") String vote_id,@PathVariable("student_id") String student_id) throws CustomException {
-        return candidateService.ReadImage(student_id,vote_id);
+    @GetMapping("candidate/img/{vote_id}/{candidate_id}")
+    public ResponseEntity<byte[]> CandidateInfoImg(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id) throws CustomException {
+       // System.out.println("candidate_id " + candidate_id);
+        return candidateService.ReadImage(candidate_id,vote_id);
 
     }
-    @GetMapping("candidate/{vote_id}/{student_id}")
+    @GetMapping("candidate/{vote_id}/{candidate_id}")
     public ResponseEntity<Map<String,Object>> CandidateInfo(@PathVariable("vote_id") String vote_id,@PathVariable("candidate_id") String candidate_id){
         return ResponseEntity.ok(candidateService.ReadCandidate(vote_id, candidate_id));
     }

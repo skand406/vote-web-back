@@ -1,12 +1,13 @@
 package com.example.votewebback.Controller;
 
 import com.example.votewebback.DTO.ResponseDTO;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
-
+@Hidden // 스웨거 문서 숨김
 @RestController
 @RequestMapping("/test")
 public class TestController {
