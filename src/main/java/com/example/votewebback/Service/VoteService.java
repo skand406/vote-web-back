@@ -163,7 +163,6 @@ public class VoteService {
     public void DeleteVote(String vote_id) throws CustomException {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).orElseThrow(() ->
                 new CustomException(700, "없는 투표" + vote_id));
-        voteRepository.delete(vote);
         List<CandidateEntity> candidateList = candidateRepository.findByVoteid(vote);
         for (CandidateEntity c : candidateList) {
             candidateService.DeleteCandidate(vote_id, c.getCandidateid());
@@ -172,6 +171,7 @@ public class VoteService {
         for (ElectorEntity e : electorList) {
             electorService.DeleteElector(vote_id, e.getStudentid());
         }
+        voteRepository.delete(vote);
 
     }
     @Transactional
