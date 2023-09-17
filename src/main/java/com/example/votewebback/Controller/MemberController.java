@@ -49,7 +49,7 @@ public class MemberController {
         ResponseDTO.UserDTO responseUserDTO = new ResponseDTO.UserDTO(userService.UpdateUserPersonalInfo(user_id, userDTO));
         return ResponseEntity.ok(responseUserDTO);
     }
-    @DeleteMapping
+    @DeleteMapping("/user/{user_id}")
     public ResponseEntity<String> UserRemove(@PathVariable("user_id") String user_id) throws CustomException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (user_id.equals(authentication.getName())){
@@ -108,8 +108,8 @@ public class MemberController {
         for(RequestDTO.CandidateDTO r:requestCandidateDTOList){
             System.out.println(r.getCandidate_id());
         }
-        List<ResponseDTO.CandidateDTO> responseCandidateDTOList = new ArrayList<>();;
-        List<ResponseDTO.StudentDTO> responseStudentDTOList = new ArrayList<>();;
+        List<ResponseDTO.CandidateDTO> responseCandidateDTOList = new ArrayList<>();
+        List<ResponseDTO.StudentDTO> responseStudentDTOList = new ArrayList<>();
         for(RequestDTO.CandidateDTO requestCandidateDTO:requestCandidateDTOList) {
             responseCandidateDTOList.add(candidateService.CreateCandidate(requestCandidateDTO));
             if(candidateService.IsPeopleVote(requestCandidateDTO) != null)

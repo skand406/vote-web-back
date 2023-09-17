@@ -218,10 +218,11 @@ public class CandidateService {
         VoteEntity vote = voteRepository.findByVoteid(vote_id).get();
         CandidateEntity candidate = candidateRepository.findByVoteidAndCandidateid(vote,candidate_id).orElseThrow(()->
                 new CustomException(700,"없는 후보 "+candidate_id));
-        candidateRepository.delete(candidate);
 
         String fileNameToDelete = "img/" + vote_id + "-" + candidate_id;
         amazonS3Client.deleteObject(bucket, fileNameToDelete);
+        candidateRepository.delete(candidate);
+
     }
     //당선된 후보 리스트
     public List<CandidateEntity> ReadCandidateCount(String vote_id) throws CustomException {

@@ -107,11 +107,12 @@ public class UserService {
     public void DeleteUser(String user_id) throws CustomException {
         UserEntity user = userRepository.findByUserid(user_id).orElseThrow(()->
                 new CustomException(700,"없는 회원"+user_id));
-        userRepository.delete(user);
         List<VoteEntity> voteList = voteRepository.findByUserid(user);
         for(VoteEntity v:voteList){
             voteService.DeleteVote(v.getVoteid());
         }
+        userRepository.delete(user);
+
     }
     public void SendVoteUrl(String vote_bundle_id) throws MessagingException {
         VoteEntity vote = voteRepository.findByVotebundleid(vote_bundle_id).get(0);
