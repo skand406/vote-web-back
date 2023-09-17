@@ -62,7 +62,7 @@ public class EmailService {
         mail.setSubject("[Vote Web]" + vote.getVotename() + " 투표 링크 안내");
 
         // 여기서 원하는 투표 URL을 설정하세요.
-        String voteUrl = "http://vote-web.duckdns.org/user"+vote_bundle_id; // 예시
+        String voteUrl = "http://vote-web.duckdns.org/user/"+vote_bundle_id; // 예시
         String htmlMsg = "<h3>투표에 참여해 주세요!</h3><br>"
                 + "<a href='" + voteUrl + "'>"+voteUrl+"</a> 투표 링크를 클릭하여 투표에 참여하세요.";
 
